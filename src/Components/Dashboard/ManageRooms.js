@@ -442,27 +442,65 @@ const ManageRooms = () => {
 
   const DEFAULT_ROOM_IMAGE = "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80";
 
+  const formatRoomImageUrl = (img) => {
+    if (!img) return DEFAULT_ROOM_IMAGE;
+    let s = typeof img === "object" && img?.url ? img.url : String(img).trim();
+    if (!s) return DEFAULT_ROOM_IMAGE;
+
+    // Clean any local dev hostnames
+    if (s.includes("127.0.0.1:1919") || s.includes("localhost:1919") || s.includes("localhost:3000") || s.includes("localhost:3001")) {
+      const match = s.match(/(?:\/_b_a_c_k_e_n_d\/travellerinwebsite)?\/media\/gridfs\/([^/]+)/);
+      if (match) {
+        s = match[1];
+      } else {
+        s = s.replace(/^https?:\/\/[^/]+/, "");
+      }
+    }
+
+    // Remote external URLs (like Unsplash, S3, external domains, data URIs)
+    if ((s.startsWith("http://") || s.startsWith("https://")) && !s.includes("127.0.0.1") && !s.includes("localhost")) {
+      return s;
+    }
+    if (s.startsWith("data:")) return s;
+
+    const base = (TravellersBaseUrl || "").replace(/\/$/, "");
+
+    // Raw GridFS ObjectId (e.g. 6aa3bc623b9011a43cd23d9e)
+    if (!s.includes("/")) {
+      return `${base}/media/gridfs/${s}/`;
+    }
+
+    // Already formatted backend path
+    if (s.startsWith("/_b_a_c_k_e_n_d/travellerinwebsite")) {
+      const rootBase = base.split("/_b_a_c_k_e_n_d")[0];
+      return `${rootBase}${s}`;
+    }
+
+    // Relative media/gridfs path
+    if (s.includes("media/gridfs/")) {
+      const fileId = s.split("media/gridfs/")[1].replace(/\//g, "");
+      return `${base}/media/gridfs/${fileId}/`;
+    }
+
+    const path = s.startsWith("/") ? s : `/${s}`;
+    return `${base}${path}`;
+  };
+
   const getRoomImage = (room) => {
     if (!room) return DEFAULT_ROOM_IMAGE;
     let imgs = room.images;
     if (typeof imgs === "string") {
       try {
         const parsed = JSON.parse(imgs);
-        if (Array.isArray(parsed) && parsed.length > 0 && typeof parsed[0] === "string" && parsed[0].length > 5) {
-          return parsed[0];
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return formatRoomImageUrl(parsed[0]);
         }
       } catch (e) {
-        if (imgs.startsWith("http://") || imgs.startsWith("https://")) return imgs;
+        if (imgs.length > 5) return formatRoomImageUrl(imgs);
       }
     }
     if (Array.isArray(imgs) && imgs.length > 0) {
-      const first = imgs[0];
-      if (typeof first === "string" && (first.startsWith("http://") || first.startsWith("https://") || first.startsWith("data:"))) {
-        return first;
-      }
-      if (typeof first === "object" && first?.url) {
-        return first.url;
-      }
+      return formatRoomImageUrl(imgs[0]);
     }
     return DEFAULT_ROOM_IMAGE;
   };
@@ -477,9 +515,10 @@ const ManageRooms = () => {
         const p = JSON.parse(room.images);
         if (Array.isArray(p)) initialImages = p;
       } catch (e) {
-        if (room.images.startsWith("http")) initialImages = [room.images];
+        if (room.images.startsWith("http") || room.images.includes("media/gridfs")) initialImages = [room.images];
       }
     }
+
 
     setFormData({
       room_number: room.room_number,
@@ -790,6 +829,27 @@ const ManageRooms = () => {
                       <span style={{ fontSize: "0.8rem", color: "var(--primary-color)" }}>
                         <FaSpinner className="spin" /> Uploading image...
                       </span>
+                    )}
+                    {Array.isArray(formData.images) && formData.images.length > 0 && (
+                      <div style={{ display: "flex", gap: "8px", marginTop: "8px", flexWrap: "wrap" }}>
+                        {formData.images.map((imgUrl, idx) => (
+                          <div key={idx} style={{ position: "relative", width: "70px", height: "50px", borderRadius: "6px", overflow: "hidden", border: "1px solid var(--border-light)" }}>
+                            <img
+                              src={formatRoomImageUrl(imgUrl)}
+                              alt="Room preview"
+                              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                              onError={(e) => { e.target.onerror = null; e.target.src = DEFAULT_ROOM_IMAGE; }}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setFormData({ ...formData, images: formData.images.filter((_, i) => i !== idx) })}
+                              style={{ position: "absolute", top: 2, right: 2, background: "rgba(0,0,0,0.6)", color: "#fff", border: "none", borderRadius: "50%", width: "18px", height: "18px", fontSize: "10px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ))}
+                      </div>
                     )}
                   </div>
                 </div>
