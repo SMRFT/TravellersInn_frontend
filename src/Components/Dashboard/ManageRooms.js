@@ -403,7 +403,9 @@ const ManageRooms = () => {
     room_number: "",
     room_type: "Deluxe Room",
     price_per_night: "",
-    capacity: 2,
+    size: "250 sq.ft",
+    bed_capacity: 2,
+    bed_type: "King Bed",
     description: "",
     amenities: "",
     images: [],
@@ -431,7 +433,9 @@ const ManageRooms = () => {
       room_number: "",
       room_type: "Deluxe Room",
       price_per_night: "",
-      capacity: 2,
+      size: "250 sq.ft",
+      bed_capacity: 2,
+      bed_type: "King Bed",
       description: "",
       amenities: "Wi-Fi, AC, TV, Room Service",
       images: [],
@@ -519,12 +523,13 @@ const ManageRooms = () => {
       }
     }
 
-
     setFormData({
       room_number: room.room_number,
       room_type: room.room_type || "Deluxe Room",
       price_per_night: room.price || room.price_per_night || "",
-      capacity: room.size || room.capacity || 2,
+      size: room.size || "250 sq.ft",
+      bed_capacity: room.bed_details?.capacity || room.capacity || 2,
+      bed_type: room.bed_details?.type || "King Bed",
       description: room.about || room.description || "",
       amenities: Array.isArray(room.amenities)
         ? room.amenities.join(", ")
@@ -559,7 +564,7 @@ const ManageRooms = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const priceVal = parseFloat(formData.price_per_night || 0);
-    const capacityVal = formData.capacity || 2;
+    const bedCapVal = parseInt(formData.bed_capacity, 10) || 2;
     const amenitiesArr = typeof formData.amenities === "string"
       ? formData.amenities.split(",").map((s) => s.trim()).filter(Boolean)
       : formData.amenities || [];
@@ -569,8 +574,12 @@ const ManageRooms = () => {
       room_type: formData.room_type,
       price: priceVal,
       price_per_night: priceVal,
-      size: String(capacityVal),
-      capacity: parseInt(capacityVal, 10) || 2,
+      size: formData.size || "250 sq.ft",
+      capacity: bedCapVal,
+      bed_details: {
+        capacity: bedCapVal,
+        type: formData.bed_type || "King Bed",
+      },
       about: formData.description || "",
       description: formData.description || "",
       amenities: amenitiesArr,
@@ -676,11 +685,16 @@ const ManageRooms = () => {
 
                   <div className="specs-row">
                     <span>
-                      <FaUsers /> {displayCapacity} Guests
+                      <FaUsers /> {room.bed_details?.capacity || room.capacity || 2} Guests
                     </span>
                     <span>
-                      <FaBed /> {room.room_type?.includes("Suite") ? "King Bed" : "Double Bed"}
+                      <FaBed /> {room.bed_details?.type || (room.room_type?.includes("Suite") ? "King Bed" : "Double Bed")}
                     </span>
+                    {room.size && (
+                      <span title="Room Size">
+                        📐 {room.size}
+                      </span>
+                    )}
                   </div>
 
                   <div className="amenities-chips">
@@ -766,6 +780,7 @@ const ManageRooms = () => {
                         <option value="Executive Suite">Executive Suite</option>
                         <option value="Family Room">Family Room</option>
                         <option value="Standard Room">Standard Room</option>
+                        <option value="Classic">Classic</option>
                       </select>
                     </div>
                   </div>
@@ -784,17 +799,47 @@ const ManageRooms = () => {
                       />
                     </div>
                     <div className="form-group">
+                      <label>Room Size *</label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.size}
+                        onChange={(e) =>
+                          setFormData({ ...formData, size: e.target.value })
+                        }
+                        placeholder="e.g. 250 sq.ft"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
                       <label>Guest Capacity *</label>
                       <input
                         type="number"
                         min="1"
                         max="10"
                         required
-                        value={formData.capacity}
+                        value={formData.bed_capacity}
                         onChange={(e) =>
-                          setFormData({ ...formData, capacity: e.target.value })
+                          setFormData({ ...formData, bed_capacity: e.target.value })
                         }
                       />
+                    </div>
+                    <div className="form-group">
+                      <label>Bed Type *</label>
+                      <select
+                        value={formData.bed_type}
+                        onChange={(e) =>
+                          setFormData({ ...formData, bed_type: e.target.value })
+                        }
+                      >
+                        <option value="King Bed">King Bed</option>
+                        <option value="Queen Bed">Queen Bed</option>
+                        <option value="Twin Beds">Twin Beds</option>
+                        <option value="Double Bed">Double Bed</option>
+                        <option value="Single Bed">Single Bed</option>
+                      </select>
                     </div>
                   </div>
 
