@@ -14,9 +14,28 @@ import {
   FaBroom,
   FaPhoneAlt,
   FaCalendarAlt,
+  FaClock,
 } from "react-icons/fa";
 import { toast } from "react-toastify";
 import apiRequest from "../apiRequest";
+
+const formatStayDateTime = (dtStr) => {
+  if (!dtStr) return "—";
+  try {
+    const d = new Date(dtStr);
+    if (isNaN(d.getTime())) return "—";
+    return d.toLocaleString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  } catch (e) {
+    return "—";
+  }
+};
 
 const PageContainer = styled.div`
   display: flex;
@@ -645,6 +664,12 @@ const RoomAvailability = () => {
           {filteredAvailability.map((item) => {
             const theme = getStatusTheme(item.status);
             const isUpdating = updatingRoom === item.room_number;
+            const bInfo = item.current_booking || item.booking_details || {};
+            const guestName = bInfo.guest_name || item.guest_name || (item.status === "occupied" ? "Guest In-House" : "Reserved Guest");
+            const guestPhone = bInfo.guest_phone || item.guest_phone || "";
+            const checkInTime = bInfo.check_in || item.check_in;
+            const checkOutTime = bInfo.check_out || item.check_out;
+            const bookingId = bInfo.booking_id || item.booking_id;
 
             return (
               <RoomStatusCard key={item.room_number} $theme={theme}>
@@ -661,19 +686,28 @@ const RoomAvailability = () => {
 
                 {item.status === "booked" && (
                   <div className="guest-info-box" style={{ background: "#EFF6FF", border: "1px solid rgba(59, 130, 246, 0.25)" }}>
-                    <div className="guest-name" style={{ color: "#1D4ED8" }}>
-                      <FaUser size={12} color="#3B82F6" />
-                      <span>{item.guest_name || item.booking_details?.guest_name || "Reservation Confirmed"}</span>
+                    <div className="guest-name" style={{ color: "#1D4ED8", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                        <FaUser size={12} color="#3B82F6" />
+                        <span>{guestName}</span>
+                      </div>
+                      {bookingId && (
+                        <span style={{ fontSize: "0.72rem", background: "#DBEAFE", color: "#1E40AF", padding: "1px 6px", borderRadius: "4px", fontWeight: 700 }}>
+                          #{bookingId}
+                        </span>
+                      )}
                     </div>
-                    <div className="guest-details" style={{ color: "#1E40AF" }}>
-                      {item.booking_details?.guest_phone && (
+                    <div className="guest-details" style={{ color: "#1E40AF", marginTop: "0.35rem" }}>
+                      {guestPhone && (
                         <span>
-                          <FaPhoneAlt size={10} /> {item.booking_details.guest_phone}
+                          <FaPhoneAlt size={10} /> {guestPhone}
                         </span>
                       )}
                       <span>
-                        <FaCalendarAlt size={10} /> Reserved Stay:{" "}
-                        {item.booking_details?.check_in ? new Date(item.booking_details.check_in).toLocaleDateString() : "—"}
+                        <FaCalendarAlt size={10} /> <strong>Check-in:</strong> {formatStayDateTime(checkInTime)}
+                      </span>
+                      <span>
+                        <FaClock size={10} /> <strong>Check-out:</strong> {formatStayDateTime(checkOutTime)}
                       </span>
                     </div>
                   </div>
@@ -681,19 +715,28 @@ const RoomAvailability = () => {
 
                 {item.status === "occupied" && (
                   <div className="guest-info-box">
-                    <div className="guest-name">
-                      <FaUser size={12} color="#EF4444" />
-                      <span>{item.guest_name || item.booking_details?.guest_name || "Guest In-House"}</span>
+                    <div className="guest-name" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                        <FaUser size={12} color="#EF4444" />
+                        <span>{guestName}</span>
+                      </div>
+                      {bookingId && (
+                        <span style={{ fontSize: "0.72rem", background: "#FEE2E2", color: "#991B1B", padding: "1px 6px", borderRadius: "4px", fontWeight: 700 }}>
+                          #{bookingId}
+                        </span>
+                      )}
                     </div>
-                    <div className="guest-details">
-                      {item.booking_details?.guest_phone && (
+                    <div className="guest-details" style={{ marginTop: "0.35rem" }}>
+                      {guestPhone && (
                         <span>
-                          <FaPhoneAlt size={10} /> {item.booking_details.guest_phone}
+                          <FaPhoneAlt size={10} /> {guestPhone}
                         </span>
                       )}
                       <span>
-                        <FaCalendarAlt size={10} /> Check-in:{" "}
-                        {item.booking_details?.check_in ? new Date(item.booking_details.check_in).toLocaleDateString() : "—"}
+                        <FaCalendarAlt size={10} /> <strong>Check-in:</strong> {formatStayDateTime(checkInTime)}
+                      </span>
+                      <span>
+                        <FaClock size={10} /> <strong>Check-out:</strong> {formatStayDateTime(checkOutTime)}
                       </span>
                     </div>
                   </div>
@@ -744,12 +787,14 @@ const RoomAvailability = () => {
                   <div className="status-dropdown">
                     <StatusSelect
                       value={item.status}
-                      disabled={isUpdating}
+                      disabled={isUpdating || item.status === "occupied"}
                       onChange={(e) => handleUpdateStatus(item.room_number, e.target.value)}
                     >
+                      {item.status === "occupied" && (
+                        <option value="occupied" disabled>🔴 Occupied (Active Stay)</option>
+                      )}
                       <option value="vacant">🟢 Vacant (Clean)</option>
                       <option value="dirty">🟡 Dirty (Needs Cleaning)</option>
-                      <option value="occupied">🔴 Occupied</option>
                       <option value="maintenance">⚫ Under Maintenance</option>
                     </StatusSelect>
                   </div>

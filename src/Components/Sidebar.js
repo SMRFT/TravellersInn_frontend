@@ -238,9 +238,8 @@ const Sidebar = ({ isOpen, onClose }) => {
   const isEmployee = true; // All authenticated roles can see employee routes
 
   const handleLogout = () => {
-    localStorage.clear();
-    const REDIRECT_URL = process.env.REACT_APP_LOGIN_REDIRECT_URL || "https://shinova.in/login";
-    window.location.href = REDIRECT_URL;
+    sessionStorage.clear();
+    window.location.href = "/Secure";
   };
 
   return (

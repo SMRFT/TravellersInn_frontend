@@ -10,10 +10,8 @@ import {
   FaRupeeSign,
   FaPrint,
   FaCalendarAlt,
-  FaFilter,
-  FaReceipt,
-  FaTimes,
   FaArrowRight,
+  FaFileAlt,
 } from "react-icons/fa";
 import apiRequest from "../apiRequest";
 import { toast } from "react-toastify";
@@ -314,12 +312,12 @@ const TableCard = styled.div`
 const StatusPill = styled.span`
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.35rem;
   padding: 0.25rem 0.65rem;
   border-radius: 999px;
   font-size: 0.72rem;
   font-weight: 700;
-  text-transform: uppercase;
+  text-transform: capitalize;
   letter-spacing: 0.4px;
   width: fit-content;
 
@@ -327,6 +325,12 @@ const StatusPill = styled.span`
     const s = String(props.$mode || "").toLowerCase().trim();
     if (s === "cash") {
       return `background: #FEF3C7; color: #B45309; border: 1px solid #FDE68A;`;
+    }
+    if (s === "debit_card" || s === "credit_card" || s === "card") {
+      return `background: #EEF2FF; color: #4338CA; border: 1px solid #C7D2FE;`;
+    }
+    if (s === "upi") {
+      return `background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0;`;
     }
     return `background: #ECFDF5; color: #065F46; border: 1px solid #A7F3D0;`;
   }}
@@ -372,6 +376,16 @@ const formatDateDisplay = (dateStr) => {
   } catch (e) {
     return dateStr;
   }
+};
+
+const formatPaymentMode = (mode, cardType) => {
+  if (!mode) return "Cash";
+  const m = String(mode).replace(/_/g, " ").trim();
+  const formattedM = m.charAt(0).toUpperCase() + m.slice(1);
+  if (cardType && (mode.toLowerCase().includes("card") || mode.toLowerCase() === "debit_card" || mode.toLowerCase() === "credit_card")) {
+    return `${formattedM} (${cardType})`;
+  }
+  return formattedM;
 };
 
 const formatDateOnly = (dateStr) => {
@@ -521,14 +535,15 @@ const AccountSummary = () => {
       toast.info("No billing data to export for the selected period");
       return;
     }
-    const headers = ["Invoice / Billing #", "Date & Time", "Guest Name", "Booking Ref", "Transaction ID", "Payment Mode", "Amount (INR)"];
+    const headers = ["Invoice / Billing #", "Date & Time", "Guest Name", "Booking Ref", "Transaction ID", "Payment Mode", "Card Type", "Amount (INR)"];
     const rows = billingData.map((rec, i) => [
       `"${rec.billing_no || rec.latest_billing_no || `TRL026/${String(i + 1).padStart(5, "0")}`}"`,
       `"${formatDateDisplay(rec.created_date || rec.date || rec.created_at)}"`,
       `"${rec.guest_name || rec.customer_name || "Guest"}"`,
       `"${getBookingRef(rec)}"`,
       `"${getTransactionRef(rec)}"`,
-      `"${rec.payment_type || rec.payment_method || "Cash"}"`,
+      `"${formatPaymentMode(rec.payment_type || rec.payment_method || "Cash", rec.card_type)}"`,
+      `"${rec.card_type || "—"}"`,
       rec.amount_paid || rec.amount || rec.total_amount || 0
     ]);
 
@@ -540,6 +555,7 @@ const AccountSummary = () => {
       `""`,
       `""`,
       `"Online: ₹${totals.onlineRevenue.toLocaleString()} | Cash: ₹${totals.cashRevenue.toLocaleString()}"`,
+      `""`,
       totals.totalRevenue
     ]);
 
@@ -577,6 +593,7 @@ const AccountSummary = () => {
       const bRef = getBookingRef(rec);
       const txId = getTransactionRef(rec);
       const pMode = rec.payment_type || rec.payment_method || "Cash";
+      const pModeDisplay = formatPaymentMode(pMode, rec.card_type);
       const dStr = formatDateDisplay(rec.created_date || rec.date || rec.created_at);
       const amt = (rec.amount_paid || rec.amount || rec.total_amount || 0).toLocaleString();
 
@@ -587,7 +604,7 @@ const AccountSummary = () => {
           <td>${gName}</td>
           <td>${bRef !== "—" ? `#${bRef}` : "—"}</td>
           <td style="font-family: monospace; font-size: 11px;">${txId}</td>
-          <td style="text-transform: capitalize;">${pMode}</td>
+          <td style="text-transform: capitalize;">${pModeDisplay}</td>
           <td style="text-align: right; font-weight: 700; color: #15803D;">₹${amt}</td>
         </tr>
       `;
@@ -624,8 +641,9 @@ const AccountSummary = () => {
       <body>
         <div class="header">
           <div class="logo-title">
-            <h1>TRAVELLERS INN</h1>
-            <p>Financial, Accounts & Billing Report</p>
+            <h1>TRAVELLER'S INN</h1>
+            <p style="margin: 2px 0 0; color: #4B5563;">60/37, Saradha College Road, SALEM - 636007 | GSTIN: 33AAMFT2081Q1ZM</p>
+            <p style="margin: 2px 0 0; color: #6B7280;">Financial, Accounts & Billing Report</p>
           </div>
           <div class="report-meta">
             <div class="period-badge">${datePeriodText}</div>
@@ -698,16 +716,287 @@ const AccountSummary = () => {
     printWindow.document.close();
   };
 
+  // Export fixed-width 382-character SDF .txt format for Tally Interface
+  const handleExportTallyTXT = () => {
+    if (billingData.length === 0) {
+      toast.info("No billing data to export for Tally in the selected period");
+      return;
+    }
+
+    const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+
+    const formatTallyDate = (dateStr) => {
+      if (!dateStr) {
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = String(now.getMonth() + 1).padStart(2, "0");
+        const d = String(now.getDate()).padStart(2, "0");
+        return `${y}${m}${d}`;
+      }
+      try {
+        const dt = new Date(dateStr);
+        if (isNaN(dt.getTime())) {
+          return String(dateStr).replace(/\D/g, "").slice(0, 8);
+        }
+        const y = dt.getFullYear();
+        const m = String(dt.getMonth() + 1).padStart(2, "0");
+        const d = String(dt.getDate()).padStart(2, "0");
+        return `${y}${m}${d}`;
+      } catch (e) {
+        return new Date().toISOString().slice(0, 10).replace(/-/g, "");
+      }
+    };
+
+    const formatDisplayDate = (dateStr) => {
+      if (!dateStr) return "16/09/2026";
+      try {
+        const dt = new Date(dateStr);
+        if (isNaN(dt.getTime())) return String(dateStr);
+        const d = String(dt.getDate()).padStart(2, "0");
+        const m = String(dt.getMonth() + 1).padStart(2, "0");
+        const y = dt.getFullYear();
+        return `${d}/${m}/${y}`;
+      } catch (e) {
+        return "16/09/2026";
+      }
+    };
+
+    const getMonthYearUpper = (dateStr) => {
+      try {
+        const dt = dateStr ? new Date(dateStr) : new Date();
+        const mIdx = isNaN(dt.getTime()) ? new Date().getMonth() : dt.getMonth();
+        const yr = isNaN(dt.getTime()) ? new Date().getFullYear() : dt.getFullYear();
+        return `${monthNames[mIdx]} ${yr}`;
+      } catch (e) {
+        return `SEP ${new Date().getFullYear()}`;
+      }
+    };
+
+    const mapPaymentLedger = (mode, cardType) => {
+      const m = String(mode || "cash").toLowerCase().trim();
+      if (m === "google_pay" || m === "gpay" || m === "upi" || m === "razorpay" || m === "online") {
+        return "GOOGLE PAY";
+      }
+      if (m === "card" || m === "debit_card" || m === "credit_card") {
+        return cardType ? `CARD - ${cardType.toUpperCase()}` : "CARD";
+      }
+      return "CASH";
+    };
+
+    // Helper: Build exactly 382-character SDF line for Tally Import
+    const buildTallySDFLine = ({
+      seqNo,
+      dateYYYYMMDD,
+      vchType = "Jrnl",
+      docNo,
+      ledgerName,
+      amount,
+      hasRef = false,
+      refDocNo = "",
+      refAmount = 0,
+      narration = "",
+    }) => {
+      const fSeq = String(seqNo).padStart(6, "0");
+      const fDate = String(dateYYYYMMDD || "").slice(0, 8);
+      const fVch = String(vchType || "Jrnl").padEnd(24, " ").slice(0, 24);
+      const fDoc = String(docNo || "").padEnd(20, " ").slice(0, 20);
+      const fLedger = String(ledgerName || "").padEnd(37, " ").slice(0, 37);
+      const fAmt = Number(amount || 0).toFixed(2).padStart(8, " ") + " ";
+      const fSpaces = " ".repeat(44);
+      const fRefTag = hasRef ? "NEW REF   " : " ".repeat(10);
+      const fRefDoc = hasRef ? String(refDocNo || "").padEnd(31, " ").slice(0, 31) : " ".repeat(31);
+      const fRefAmt = hasRef ? Number(refAmount || 0).toFixed(2).padStart(8, " ") : " ".repeat(8);
+      const fNarr = String(narration || "").padEnd(185, " ").slice(0, 185);
+
+      return `${fSeq}${fDate}${fVch}${fDoc}${fLedger}${fAmt}${fSpaces}${fRefTag}${fRefDoc}${fRefAmt}${fNarr}`;
+    };
+
+    let tallyLines = [];
+    let seqCounter = 1;
+
+    billingData.forEach((rec, idx) => {
+      const rawDateStr = rec.created_date || rec.date || rec.created_at;
+      const tallyDate = formatTallyDate(rawDateStr);
+      const monthYear = getMonthYearUpper(rawDateStr);
+      const advCollectionLedger = `ADVANCE COLLECTION ${monthYear}`;
+
+      const totalAmt = parseFloat(rec.amount_paid || rec.amount || rec.total_amount || 0);
+
+      const rawBillingNo = rec.billing_no || rec.latest_billing_no || "";
+      const isFolioBill = rawBillingNo.startsWith("F") || rec.booking_status === "checked_out";
+
+      const guestName = (rec.guest_name || rec.customer_name || "GUEST").toUpperCase();
+      const arrDt = formatDisplayDate(rec.guest_check_in || rec.check_in || rawDateStr);
+      const depDt = formatDisplayDate(rec.guest_check_out || rec.check_out || rawDateStr);
+      const roomStr = Array.isArray(rec.room_numbers)
+        ? rec.room_numbers.join(",")
+        : (rec.room_numbers || "—");
+      const txId = getTransactionRef(rec);
+
+      // Use actual billing number from our database
+      const docNo = rawBillingNo || (rec.booking_id ? `BK-${rec.booking_id}` : `TRL026/${String(idx + 1).padStart(5, "0")}`);
+
+      if (isFolioBill) {
+        // Folio Invoice (Checkout / Final Bill) Voucher
+        const rcptNo = rec.receipt_no || docNo;
+        const cardRefStr = txId !== "—" ? ` CCNO: ${txId}` : "";
+        const narration = `FO BILL: ${docNo} GUEST NAME: ${guestName}; Arr.Dt:${arrDt}; Dep.Dt:${depDt}; Roomno:${roomStr} : Recpt#: ${rcptNo}${cardRefStr}`;
+
+        const taxDetails = rec.tax_details && typeof rec.tax_details === "object" ? rec.tax_details : {};
+        let taxableAmt = taxDetails.taxable_amount !== undefined
+          ? parseFloat(taxDetails.taxable_amount)
+          : (taxDetails.taxable !== undefined ? parseFloat(taxDetails.taxable) : 0);
+        let cgst = taxDetails.cgst_amount !== undefined
+          ? parseFloat(taxDetails.cgst_amount)
+          : (taxDetails.cgst !== undefined ? parseFloat(taxDetails.cgst) : 0);
+        let sgst = taxDetails.sgst_amount !== undefined
+          ? parseFloat(taxDetails.sgst_amount)
+          : (taxDetails.sgst !== undefined ? parseFloat(taxDetails.sgst) : 0);
+        let roundOff = rec.round_off !== undefined
+          ? parseFloat(rec.round_off)
+          : (taxDetails.round_off !== undefined ? parseFloat(taxDetails.round_off) : 0);
+
+        if (taxableAmt === 0 && totalAmt > 0) {
+          taxableAmt = parseFloat((totalAmt / 1.05).toFixed(2));
+          const taxTotal = parseFloat((totalAmt - taxableAmt).toFixed(2));
+          cgst = parseFloat((taxTotal / 2).toFixed(2));
+          sgst = parseFloat((taxTotal - cgst).toFixed(2));
+        }
+
+        // 1. Advance Collection (Debit)
+        tallyLines.push(buildTallySDFLine({
+          seqNo: seqCounter,
+          dateYYYYMMDD: tallyDate,
+          vchType: "Jrnl",
+          docNo: docNo,
+          ledgerName: advCollectionLedger,
+          amount: -totalAmt,
+          hasRef: true,
+          refDocNo: docNo,
+          refAmount: -totalAmt,
+          narration: narration,
+        }));
+
+        // 2. Gross Collections (GST Exempt) (Credit)
+        tallyLines.push(buildTallySDFLine({
+          seqNo: seqCounter,
+          dateYYYYMMDD: tallyDate,
+          vchType: "Jrnl",
+          docNo: docNo,
+          ledgerName: "GROSS COLLECTIONS (GST EXEMPT)",
+          amount: taxableAmt,
+          hasRef: false,
+          narration: narration,
+        }));
+
+        // 3. SGST Lodge @ 2.5% (Credit)
+        if (sgst > 0) {
+          tallyLines.push(buildTallySDFLine({
+            seqNo: seqCounter,
+            dateYYYYMMDD: tallyDate,
+            vchType: "Jrnl",
+            docNo: docNo,
+            ledgerName: "SGST LODGE @ 2.5%",
+            amount: sgst,
+            hasRef: false,
+            narration: narration,
+          }));
+        }
+
+        // 4. CGST Lodge @ 2.5% (Credit)
+        if (cgst > 0) {
+          tallyLines.push(buildTallySDFLine({
+            seqNo: seqCounter,
+            dateYYYYMMDD: tallyDate,
+            vchType: "Jrnl",
+            docNo: docNo,
+            ledgerName: "CGST  LODGE @ 2.5%",
+            amount: cgst,
+            hasRef: false,
+            narration: narration,
+          }));
+        }
+
+        // 5. Round Off (Credit/Debit)
+        if (roundOff !== 0) {
+          tallyLines.push(buildTallySDFLine({
+            seqNo: seqCounter,
+            dateYYYYMMDD: tallyDate,
+            vchType: "Jrnl",
+            docNo: docNo,
+            ledgerName: "ROUND OFF",
+            amount: roundOff,
+            hasRef: false,
+            narration: narration,
+          }));
+        }
+
+        seqCounter++;
+      } else {
+        // Advance Collection Receipt Voucher
+        const paymentLedger = mapPaymentLedger(rec.payment_type || rec.payment_method, rec.card_type);
+        const pModeTag = (rec.payment_type === "google_pay" || rec.payment_type === "gpay" || rec.payment_type === "upi" || rec.payment_type === "razorpay")
+          ? (rec.payment_type === "razorpay" ? "RAZORPAY" : "gpay")
+          : (rec.payment_type || "RENT").toUpperCase();
+        const cardRefStr = txId !== "—" ? `; CC: ${txId}` : "";
+        const narration = `${docNo}; ADV FOR GUEST NAME:${guestName};${pModeTag}; Arr.Dt: ${arrDt}; Dep.Dt: ${depDt}${cardRefStr}`;
+
+        // Line 1: Payment Mode Ledger (Debit with NEW REF)
+        tallyLines.push(buildTallySDFLine({
+          seqNo: seqCounter,
+          dateYYYYMMDD: tallyDate,
+          vchType: "Jrnl",
+          docNo: docNo,
+          ledgerName: paymentLedger,
+          amount: -totalAmt,
+          hasRef: true,
+          refDocNo: docNo,
+          refAmount: -totalAmt,
+          narration: narration,
+        }));
+
+        // Line 2: Advance Collection Ledger (Credit)
+        tallyLines.push(buildTallySDFLine({
+          seqNo: seqCounter,
+          dateYYYYMMDD: tallyDate,
+          vchType: "Jrnl",
+          docNo: docNo,
+          ledgerName: advCollectionLedger,
+          amount: totalAmt,
+          hasRef: false,
+          narration: narration,
+        }));
+
+        seqCounter++;
+      }
+    });
+
+    const fileContent = tallyLines.join("\r\n") + "\r\n";
+    const blob = new Blob([fileContent], { type: "text/plain;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    const dateTag = startDate && endDate ? `${startDate}_to_${endDate}` : "All";
+    link.setAttribute("download", `TravellersInn_Tally_${dateTag}.txt`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success(`Tally .txt file generated (${tallyLines.length} lines, ${seqCounter - 1} vouchers)`);
+  };
+
   return (
     <PageContainer className="animate-fade-in">
       <HeaderBar>
         <div className="title-group">
           <h2>Accounts, Billing & Financial Reports</h2>
-          <p>Review revenue performance, payment channel splits, and customer transactions.</p>
+          <p>Review revenue performance, payment channel splits, and export data for Tally interface.</p>
         </div>
         <div className="actions-group">
           <SecondaryButton onClick={handlePrint}>
             <FaPrint /> Print Report
+          </SecondaryButton>
+          <SecondaryButton onClick={handleExportTallyTXT} title="Download .txt export for Tally accounting software">
+            <FaFileAlt /> Download .txt (Tally)
           </SecondaryButton>
           <PrimaryButton onClick={exportCSV}>
             <FaDownload /> Export CSV
@@ -882,7 +1171,10 @@ const AccountSummary = () => {
                       </td>
                       <td>
                         <StatusPill $mode={pMode}>
-                          {pMode}
+                          {(pMode.toLowerCase().includes("card") || pMode.toLowerCase() === "debit_card" || pMode.toLowerCase() === "credit_card") && (
+                            <FaCreditCard size={10} style={{ marginRight: "2px" }} />
+                          )}
+                          {formatPaymentMode(pMode, rec.card_type)}
                         </StatusPill>
                       </td>
                       <td style={{ textAlign: "right" }}>
