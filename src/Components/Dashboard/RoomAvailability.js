@@ -64,13 +64,19 @@ const HeaderBar = styled.div`
 
 const TopControlCard = styled.div`
   background: #ffffff;
-  padding: 1.25rem 1.5rem;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-sm);
+  padding: 1.5rem 1.75rem;
+  border-radius: var(--radius-xl);
+  border: 1.5px solid rgba(59, 21, 78, 0.65);
+  box-shadow: 0 4px 18px -2px rgba(23, 20, 36, 0.05), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.35rem;
+  transition: all 0.25s ease;
+
+  &:hover {
+    box-shadow: 0 12px 32px -4px rgba(35, 11, 47, 0.12), 0 0 0 1px rgba(197, 160, 89, 0.35);
+    border-color: var(--accent-gold);
+  }
 
   .date-row {
     display: flex;
@@ -86,37 +92,43 @@ const TopControlCard = styled.div`
     gap: 0.75rem;
 
     input[type="date"] {
-      padding: 0.55rem 1rem;
+      padding: 0.6rem 1rem;
       border-radius: var(--radius-sm);
-      border: 1px solid var(--border-light);
+      border: 1.5px solid var(--border-medium);
       font-size: 0.9rem;
       font-weight: 600;
       color: var(--primary-dark);
-      background: var(--bg-subtle);
+      background: #ffffff;
       outline: none;
       cursor: pointer;
+      box-shadow: var(--shadow-xs);
+      transition: all 0.2s ease;
 
       &:focus {
         border-color: var(--accent-gold);
+        box-shadow: 0 0 0 3px var(--accent-gold-glow);
       }
     }
 
     .nav-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      border: 1px solid var(--border-light);
-      background: var(--bg-subtle);
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border-light);
+      background: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
       color: var(--text-secondary);
       cursor: pointer;
-      transition: all 0.2s ease;
+      box-shadow: var(--shadow-xs);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
       &:hover {
         background: var(--primary-color);
         color: #ffffff;
         border-color: var(--primary-color);
+        transform: scale(1.05);
       }
     }
   }
@@ -124,7 +136,7 @@ const TopControlCard = styled.div`
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 0.75rem;
+    gap: 0.85rem;
   }
 `;
 
@@ -132,28 +144,31 @@ const StatBadge = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 1rem;
-  border-radius: 12px;
+  padding: 0.85rem 1.15rem;
+  border-radius: 14px;
   cursor: pointer;
   border: 1.5px solid ${(props) => (props.$active ? props.$borderColor : "var(--border-light)")};
-  background: ${(props) => (props.$active ? props.$bgActive : "var(--bg-subtle)")};
-  transition: all 0.2s ease;
+  background: ${(props) => (props.$active ? props.$bgActive : "#ffffff")};
+  box-shadow: ${(props) => (props.$active ? "0 4px 14px rgba(0, 0, 0, 0.06)" : "var(--shadow-xs)")};
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-sm);
+    border-color: ${(props) => props.$borderColor};
   }
 
   .stat-left {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.65rem;
 
     .dot {
-      width: 12px;
-      height: 12px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       background: ${(props) => props.$color};
+      box-shadow: 0 0 6px ${(props) => props.$color};
     }
 
     .label {
@@ -164,7 +179,7 @@ const StatBadge = styled.div`
   }
 
   .count {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: 800;
     color: ${(props) => props.$color};
     font-family: "Outfit", sans-serif;
@@ -236,19 +251,22 @@ const getStatusTheme = (status) => {
 const RoomStatusCard = styled(motion.div)`
   background: #ffffff;
   border-radius: var(--radius-lg);
-  border: 1.5px solid ${(props) => props.$theme.border};
-  padding: 1.4rem;
-  box-shadow: var(--shadow-sm);
+  border: 1.5px solid rgba(59, 21, 78, 0.5);
+  border-top: 5px solid ${(props) => props.$theme.color};
+  padding: 1.5rem;
+  box-shadow: 0 4px 16px -2px rgba(23, 20, 36, 0.05), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 1.15rem;
   position: relative;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 
   &:hover {
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-    transform: translateY(-2px);
+    box-shadow: 0 14px 30px -4px rgba(35, 11, 47, 0.12), 0 0 0 1px rgba(197, 160, 89, 0.35);
+    transform: translateY(-4px);
+    border-color: var(--accent-gold);
+    border-top-color: ${(props) => props.$theme.color};
   }
 
   .card-top {

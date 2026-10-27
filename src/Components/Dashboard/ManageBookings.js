@@ -46,6 +46,13 @@ const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.75rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    gap: 1.25rem;
+  }
 `;
 
 const HeaderBar = styled.div`
@@ -54,6 +61,7 @@ const HeaderBar = styled.div`
   align-items: center;
   flex-wrap: wrap;
   gap: 1rem;
+  width: 100%;
 
   .title-group h2 {
     font-size: 1.4rem;
@@ -74,13 +82,30 @@ const HeaderBar = styled.div`
     align-items: center;
     flex-wrap: wrap;
   }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.85rem;
+
+    .actions-group {
+      width: 100%;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      button {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  }
 `;
 
 const PrimaryButton = styled(motion.button)`
-  background: linear-gradient(135deg, #4A1E5D 0%, #682B83 100%);
+  background: linear-gradient(135deg, #180722 0%, #350F48 50%, #4D1668 100%);
   color: #FFFFFF;
-  border: none;
-  padding: 0.7rem 1.4rem;
+  border: 1px solid rgba(197, 160, 89, 0.35);
+  padding: 0.72rem 1.45rem;
   border-radius: var(--radius-md);
   font-weight: 600;
   font-size: 0.88rem;
@@ -88,10 +113,12 @@ const PrimaryButton = styled(motion.button)`
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
-  box-shadow: 0 4px 14px var(--primary-glow);
+  box-shadow: 0 4px 14px rgba(59, 21, 78, 0.25);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 
   &:hover {
-    box-shadow: 0 6px 18px var(--primary-glow);
+    box-shadow: 0 6px 20px rgba(59, 21, 78, 0.35);
+    transform: translateY(-1px);
   }
 `;
 
@@ -99,31 +126,50 @@ const SecondaryButton = styled.button`
   background: #FFFFFF;
   color: var(--primary-color);
   border: 1px solid var(--border-light);
-  padding: 0.7rem 1.2rem;
+  padding: 0.72rem 1.25rem;
   border-radius: var(--radius-md);
   font-weight: 600;
   font-size: 0.85rem;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
   cursor: pointer;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-xs);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 
   &:hover {
-    background: var(--bg-subtle);
-    border-color: var(--primary-light);
+    background: #FFFFFF;
+    border-color: rgba(197, 160, 89, 0.4);
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-1px);
   }
 `;
 
 const SectionCard = styled.div`
   background: #FFFFFF;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-sm);
-  padding: 1.25rem 1.5rem;
+  border-radius: var(--radius-xl);
+  border: 1.5px solid rgba(59, 21, 78, 0.65);
+  box-shadow: 0 4px 18px -2px rgba(23, 20, 36, 0.05), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+  padding: 1.5rem 1.75rem;
   display: flex;
   flex-direction: column;
-  gap: 1.1rem;
+  gap: 1.25rem;
+  transition: all 0.25s ease;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    padding: 1.1rem 0.85rem;
+    border-radius: var(--radius-lg);
+    gap: 1rem;
+  }
+
+  &:hover {
+    box-shadow: 0 12px 32px -4px rgba(35, 11, 47, 0.12), 0 0 0 1px rgba(197, 160, 89, 0.35);
+    border-color: var(--accent-gold);
+  }
 `;
 
 const SectionHeader = styled.div`
@@ -133,7 +179,22 @@ const SectionHeader = styled.div`
   flex-wrap: wrap;
   gap: 0.75rem;
   padding-bottom: 0.85rem;
-  border-bottom: 1px solid var(--border-light);
+  border-bottom: 1.5px solid rgba(59, 21, 78, 0.15);
+  width: 100%;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+
+    .section-title-group {
+      width: 100%;
+    }
+
+    .title-texts h3 {
+      font-size: 1.05rem;
+    }
+  }
 
   .section-title-group {
     display: flex;
@@ -178,7 +239,7 @@ const SectionHeader = styled.div`
     font-weight: 700;
     background: ${(props) => (props.$variant === "past" ? "#F3F4F6" : "rgba(74, 30, 93, 0.08)")};
     color: ${(props) => (props.$variant === "past" ? "#374151" : "var(--primary-color)")};
-    border: 1px solid ${(props) => (props.$variant === "past" ? "#E5E7EB" : "rgba(74, 30, 93, 0.2)")};
+    border: 1.5px solid ${(props) => (props.$variant === "past" ? "#E5E7EB" : "rgba(74, 30, 93, 0.2)")};
   }
 `;
 
@@ -186,13 +247,17 @@ const FilterToolbar = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.85rem;
   flex-wrap: wrap;
+  width: 100%;
+  max-width: 100%;
 
   .search-input-group {
     position: relative;
-    flex: 1;
-    min-width: 260px;
+    flex: 1 1 240px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
 
     svg {
       position: absolute;
@@ -205,8 +270,9 @@ const FilterToolbar = styled.div`
 
     input {
       width: 100%;
+      box-sizing: border-box;
       padding: 0.65rem 1rem 0.65rem 2.5rem;
-      border: 1px solid var(--border-light);
+      border: 1.5px solid var(--border-medium);
       border-radius: var(--radius-md);
       font-size: 0.85rem;
       background: var(--bg-subtle);
@@ -214,8 +280,8 @@ const FilterToolbar = styled.div`
 
       &:focus {
         background: #FFFFFF;
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 3px rgba(74, 30, 93, 0.1);
+        border-color: var(--accent-gold);
+        box-shadow: 0 0 0 3px var(--accent-gold-glow);
       }
     }
   }
@@ -225,32 +291,55 @@ const FilterToolbar = styled.div`
     gap: 0.6rem;
     align-items: center;
     flex-wrap: wrap;
+    max-width: 100%;
   }
 
   .tabs-group {
     display: flex;
     background: var(--bg-subtle);
-    padding: 3px;
+    padding: 4px;
     border-radius: var(--radius-md);
-    border: 1px solid var(--border-light);
-    gap: 2px;
+    border: 1.5px solid rgba(59, 21, 78, 0.2);
+    gap: 3px;
     overflow-x: auto;
+    max-width: 100%;
+    width: auto;
+    -webkit-overflow-scrolling: touch;
+
+    &::-webkit-scrollbar {
+      height: 4px;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: rgba(59, 21, 78, 0.25);
+      border-radius: 4px;
+    }
 
     button {
       background: transparent;
       border: none;
       padding: 0.45rem 0.85rem;
       border-radius: var(--radius-sm);
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 600;
       color: var(--text-secondary);
       cursor: pointer;
       white-space: nowrap;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      flex-shrink: 0;
 
       &.active {
-        background: #FFFFFF;
+        background: linear-gradient(135deg, #1C0A25 0%, #3B154E 100%);
+        color: #FFFFFF;
+        box-shadow: 0 2px 8px rgba(59, 21, 78, 0.25);
+        font-weight: 700;
+      }
+
+      &:hover:not(.active) {
         color: var(--primary-dark);
-        box-shadow: var(--shadow-sm);
+        background: rgba(59, 21, 78, 0.05);
       }
     }
   }
@@ -260,6 +349,7 @@ const FilterToolbar = styled.div`
     align-items: center;
     gap: 0.5rem;
     flex-wrap: wrap;
+    max-width: 100%;
 
     .date-box {
       display: flex;
@@ -268,29 +358,31 @@ const FilterToolbar = styled.div`
       background: var(--bg-subtle);
       padding: 0.3rem 0.6rem;
       border-radius: var(--radius-md);
-      border: 1px solid var(--border-light);
+      border: 1.5px solid var(--border-light);
       font-size: 0.8rem;
       font-weight: 600;
       color: var(--text-secondary);
+      max-width: 100%;
 
       input {
-        border: 1px solid var(--border-light);
+        border: 1.5px solid var(--border-medium);
         border-radius: var(--radius-sm);
         padding: 0.3rem 0.5rem;
         font-size: 0.8rem;
         background: #FFFFFF;
         color: var(--text-primary);
         outline: none;
+        max-width: 130px;
 
         &:focus {
-          border-color: var(--primary-color);
+          border-color: var(--accent-gold);
         }
       }
     }
 
     .clear-date-btn {
       background: #FFFFFF;
-      border: 1px solid var(--border-light);
+      border: 1.5px solid var(--border-light);
       padding: 0.4rem 0.75rem;
       border-radius: var(--radius-sm);
       font-size: 0.78rem;
@@ -313,17 +405,66 @@ const FilterToolbar = styled.div`
 const TableCard = styled.div`
   background: #FFFFFF;
   border-radius: var(--radius-md);
+  border: 1.5px solid rgba(59, 21, 78, 0.35);
+  box-shadow: 0 2px 8px -2px rgba(23, 20, 36, 0.04);
   overflow: hidden;
+  transition: all 0.25s ease;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+
+  &:hover {
+    border-color: rgba(197, 160, 89, 0.55);
+  }
+
+  .mobile-scroll-hint {
+    display: none;
+    @media (max-width: 992px) {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      background: rgba(59, 21, 78, 0.04);
+      padding: 0.42rem 0.85rem;
+      border-bottom: 1px solid rgba(59, 21, 78, 0.1);
+      user-select: none;
+    }
+  }
 
   .table-responsive {
     overflow-x: auto;
+    width: 100%;
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
+    display: block;
+
+    /* Custom horizontal scrollbar */
+    &::-webkit-scrollbar {
+      height: 6px;
+    }
+    &::-webkit-scrollbar-track {
+      background: #F8FAFD;
+      border-radius: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: rgba(59, 21, 78, 0.35);
+      border-radius: 4px;
+      &:hover {
+        background: rgba(59, 21, 78, 0.6);
+      }
+    }
   }
 
   table {
     width: 100%;
+    min-width: 860px;
     border-collapse: collapse;
     font-size: 0.85rem;
     text-align: left;
+    table-layout: auto;
 
     th {
       background: var(--bg-subtle);
@@ -332,6 +473,8 @@ const TableCard = styled.div`
       color: var(--text-primary);
       border-bottom: 1px solid var(--border-light);
       white-space: nowrap;
+      font-size: 0.8rem;
+      letter-spacing: 0.3px;
     }
 
     td {
@@ -420,35 +563,39 @@ const PastOverstayBadge = styled.span`
 const ActionButtonsGroup = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
   flex-wrap: wrap;
 
   button {
     background: #FFFFFF;
     border: 1px solid var(--border-light);
     color: var(--text-primary);
-    padding: 0.45rem 0.7rem;
-    border-radius: var(--radius-sm);
+    padding: 0.45rem 0.75rem;
+    border-radius: 8px;
     font-size: 0.75rem;
     font-weight: 600;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    transition: all 0.2s ease;
+    box-shadow: var(--shadow-xs);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 
     &:hover {
-      background: var(--bg-subtle);
-      border-color: var(--primary-light);
+      background: #FFFFFF;
+      border-color: rgba(197, 160, 89, 0.45);
       color: var(--primary-color);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
     }
 
     &.invoice-btn {
       color: var(--primary-color);
-      border-color: rgba(74, 30, 93, 0.25);
-      background: rgba(74, 30, 93, 0.04);
+      border-color: rgba(59, 21, 78, 0.2);
+      background: rgba(59, 21, 78, 0.04);
       &:hover {
-        background: rgba(74, 30, 93, 0.08);
+        background: rgba(59, 21, 78, 0.08);
+        border-color: var(--primary-color);
       }
     }
 
@@ -458,6 +605,7 @@ const ActionButtonsGroup = styled.div`
       background: #ECFDF5;
       &:hover {
         background: #D1FAE5;
+        border-color: #059669;
       }
     }
 
@@ -467,6 +615,7 @@ const ActionButtonsGroup = styled.div`
       background: #EFF6FF;
       &:hover {
         background: #DBEAFE;
+        border-color: #2563EB;
       }
     }
   }
@@ -487,7 +636,13 @@ const ModalPortalOverlay = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem;
+  padding: 1.25rem;
+  overflow-y: auto;
+
+  @media (max-width: 640px) {
+    padding: 0.5rem;
+    align-items: flex-start;
+  }
 `;
 
 const ModalPortalContainer = styled(motion.div)`
@@ -495,33 +650,61 @@ const ModalPortalContainer = styled(motion.div)`
   border-radius: 20px;
   width: 100%;
   max-width: ${(props) => props.$maxWidth || "600px"};
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+  max-height: min(92vh, calc(100vh - 2.5rem));
+  border: 2px solid rgba(197, 160, 89, 0.55);
+  box-shadow: 
+    0 0 0 1px rgba(255, 255, 255, 0.85) inset,
+    0 30px 80px -15px rgba(18, 6, 28, 0.55),
+    0 0 35px -5px rgba(197, 160, 89, 0.25);
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  margin: auto;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+  }
 
   .modal-header {
+    flex-shrink: 0;
     padding: 1.25rem 1.75rem;
-    border-bottom: 1px solid var(--border-light);
+    background: linear-gradient(135deg, #180722 0%, #300C3F 60%, #4D1668 100%);
+    border-bottom: 2px solid rgba(197, 160, 89, 0.45);
     display: flex;
     align-items: center;
     justify-content: space-between;
 
     h3 {
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       font-weight: 700;
-      color: var(--primary-dark);
+      color: #FFFFFF;
+      font-family: 'Playfair Display', serif;
       margin: 0;
     }
 
     button {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-size: 1.2rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      font-size: 0.95rem;
       cursor: pointer;
-      &:hover { color: var(--text-primary); }
+      transition: all 0.2s ease;
+      &:hover {
+        background: rgba(225, 29, 72, 0.8);
+        border-color: #E11D48;
+        transform: scale(1.08);
+      }
     }
   }
 
@@ -530,6 +713,26 @@ const ModalPortalContainer = styled(motion.div)`
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    min-height: 0;
+    overscroll-behavior: contain;
+
+    /* Custom elegant scrollbar */
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.03);
+      border-radius: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: rgba(74, 30, 93, 0.25);
+      border-radius: 4px;
+      &:hover {
+        background: rgba(74, 30, 93, 0.5);
+      }
+    }
   }
 
   .form-row {
@@ -554,45 +757,59 @@ const ModalPortalContainer = styled(motion.div)`
     }
 
     input, select, textarea {
-      padding: 0.6rem 0.85rem;
+      padding: 0.65rem 0.85rem;
       border-radius: var(--radius-sm);
-      border: 1px solid var(--border-light);
+      border: 1.5px solid var(--border-medium);
       font-size: 0.85rem;
       outline: none;
       background: #FFFFFF;
 
       &:focus {
-        border-color: var(--primary-color);
+        border-color: var(--accent-gold);
+        box-shadow: 0 0 0 3px var(--accent-gold-glow);
       }
     }
   }
 
   .modal-footer {
-    padding: 1.25rem 1.75rem;
-    border-top: 1px solid var(--border-light);
+    flex-shrink: 0;
+    padding: 1.15rem 1.75rem;
+    background: #F8FAFD;
+    border-top: 1.5px solid var(--border-light);
     display: flex;
     justify-content: flex-end;
     gap: 0.75rem;
     align-items: center;
 
     button {
-      padding: 0.65rem 1.25rem;
+      padding: 0.65rem 1.35rem;
       border-radius: var(--radius-sm);
       font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
+      transition: all 0.2s ease;
     }
 
     .btn-secondary {
-      background: var(--bg-subtle);
-      border: 1px solid var(--border-light);
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-light);
       color: var(--text-secondary);
+      box-shadow: var(--shadow-xs);
+      &:hover {
+        border-color: #CBD5E1;
+        color: var(--text-primary);
+      }
     }
 
     .btn-primary {
-      background: var(--primary-color);
+      background: linear-gradient(135deg, #180722 0%, #350F48 50%, #4D1668 100%);
       color: #FFFFFF;
-      border: none;
+      border: 1px solid rgba(197, 160, 89, 0.35);
+      box-shadow: 0 4px 12px rgba(59, 21, 78, 0.25);
+      &:hover {
+        box-shadow: 0 6px 18px rgba(59, 21, 78, 0.35);
+        transform: translateY(-1px);
+      }
     }
   }
 `;
@@ -2791,12 +3008,12 @@ const ManageBookings = () => {
       <!DOCTYPE html>
       <html>
         <head>
-          <title>${isCancelled ? "Cancellation Folio" : "Invoice"} - ${b.booking_id || b.id}</title>
+          <title>${isCancelled ? "Cancellation Folio" : "Tax Invoice"} - ${b.booking_id || b.id}</title>
           <meta charset="utf-8" />
           <style>
             @page {
               size: A4 portrait;
-              margin: 12mm;
+              margin: 8mm 10mm 6mm 10mm;
             }
             * {
               box-sizing: border-box;
@@ -2805,9 +3022,9 @@ const ManageBookings = () => {
               font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
               color: #1F2937;
               margin: 0;
-              padding: 10px;
-              font-size: 13px;
-              line-height: 1.5;
+              padding: 6px;
+              font-size: 12px;
+              line-height: 1.35;
               -webkit-print-color-adjust: exact;
               print-color-adjust: exact;
             }
@@ -2816,7 +3033,7 @@ const ManageBookings = () => {
               margin: 0 auto;
               border: 1px solid ${isCancelled ? "#FCA5A5" : "#E5E7EB"};
               border-radius: 8px;
-              padding: 24px 28px;
+              padding: 16px 20px;
               background: #FFFFFF;
               position: relative;
             }
@@ -2826,15 +3043,15 @@ const ManageBookings = () => {
                 top: 40%;
                 left: 50%;
                 transform: translate(-50%, -50%) rotate(-25deg);
-                font-size: 64px;
+                font-size: 54px;
                 font-weight: 900;
                 color: rgba(220, 38, 38, 0.08);
                 text-transform: uppercase;
                 letter-spacing: 6px;
                 pointer-events: none;
                 z-index: 0;
-                border: 6px solid rgba(220, 38, 38, 0.1);
-                padding: 10px 30px;
+                border: 5px solid rgba(220, 38, 38, 0.1);
+                padding: 8px 24px;
                 border-radius: 12px;
               }
             ` : ""}
@@ -2843,29 +3060,30 @@ const ManageBookings = () => {
               justify-content: space-between;
               align-items: flex-start;
               border-bottom: 2px solid ${isCancelled ? "#DC2626" : "#4A1E5D"};
-              padding-bottom: 16px;
-              margin-bottom: 18px;
+              padding-bottom: 8px;
+              margin-bottom: 10px;
             }
             .brand-name {
-              font-size: 22px;
+              font-size: 20px;
               font-weight: 800;
               color: #4A1E5D;
-              margin: 0 0 4px 0;
+              margin: 0 0 2px 0;
               letter-spacing: 0.5px;
             }
             .brand-sub {
-              font-size: 12px;
+              font-size: 11px;
               color: #6B7280;
-              margin: 2px 0;
+              margin: 1px 0;
+              line-height: 1.25;
             }
             .invoice-badge {
               text-align: right;
             }
             .badge-title {
-              font-size: 18px;
+              font-size: 16px;
               font-weight: 800;
               color: ${isCancelled ? "#DC2626" : "#4A1E5D"};
-              letter-spacing: 1px;
+              letter-spacing: 0.5px;
             }
             .status-pill-cancel {
               display: inline-block;
@@ -2876,71 +3094,71 @@ const ManageBookings = () => {
               padding: 2px 8px;
               border-radius: 4px;
               letter-spacing: 0.5px;
-              margin-top: 3px;
+              margin-top: 2px;
               text-transform: uppercase;
             }
             .badge-no {
-              font-size: 13px;
+              font-size: 12.5px;
               font-weight: 700;
               color: #374151;
-              margin-top: 2px;
+              margin-top: 1px;
             }
             .badge-date {
               font-size: 11px;
               color: #6B7280;
-              margin-top: 2px;
+              margin-top: 1px;
             }
             .cancellation-card {
               background: #FEF2F2;
               border: 1.5px solid #FCA5A5;
               border-radius: 6px;
-              padding: 12px 16px;
-              margin-bottom: 18px;
+              padding: 10px 14px;
+              margin-bottom: 12px;
             }
             .cancellation-card-title {
               display: flex;
               justify-content: space-between;
               align-items: center;
               border-bottom: 1px dashed #F87171;
-              padding-bottom: 6px;
-              margin-bottom: 8px;
+              padding-bottom: 4px;
+              margin-bottom: 6px;
               font-weight: 800;
-              font-size: 12px;
+              font-size: 11.5px;
               color: #991B1B;
               letter-spacing: 0.5px;
             }
             .cancellation-grid {
               display: grid;
               grid-template-columns: 1fr 1fr;
-              gap: 8px 16px;
-              font-size: 12px;
+              gap: 6px 14px;
+              font-size: 11.5px;
               color: #7F1D1D;
             }
             .details-grid {
               display: grid;
               grid-template-columns: 1fr 1fr;
-              gap: 20px;
+              gap: 12px;
               background: #F9FAFB;
               border: 1px solid #E5E7EB;
               border-radius: 6px;
-              padding: 14px 16px;
-              margin-bottom: 20px;
+              padding: 8px 12px;
+              margin-bottom: 10px;
             }
             .section-title {
-              font-size: 11px;
+              font-size: 10px;
               font-weight: 700;
               text-transform: uppercase;
               color: #9CA3AF;
-              margin-bottom: 6px;
+              margin-bottom: 3px;
               letter-spacing: 0.5px;
             }
             .details-text {
-              font-size: 13px;
-              line-height: 1.45;
+              font-size: 11.5px;
+              line-height: 1.35;
               color: #111827;
             }
             .table-container {
-              margin-bottom: 20px;
+              margin-bottom: 8px;
             }
             table.invoice-table {
               width: 100%;
@@ -2950,19 +3168,20 @@ const ManageBookings = () => {
               background: ${isCancelled ? "#7F1D1D" : "#4A1E5D"};
               color: #FFFFFF;
               font-weight: 700;
-              font-size: 12px;
+              font-size: 11px;
               text-transform: uppercase;
               letter-spacing: 0.5px;
-              padding: 10px 12px;
+              padding: 5px 8px;
               text-align: left;
             }
             table.invoice-table th.text-right {
               text-align: right;
             }
             table.invoice-table td {
-              padding: 10px 12px;
+              padding: 4px 8px;
               border-bottom: 1px solid #E5E7EB;
-              font-size: 13px;
+              font-size: 11.5px;
+              line-height: 1.25;
             }
             table.invoice-table td.text-right {
               text-align: right;
@@ -2970,15 +3189,16 @@ const ManageBookings = () => {
             .financial-summary {
               display: flex;
               justify-content: flex-end;
-              margin-top: 10px;
+              margin-top: 6px;
             }
             .summary-table {
-              width: 380px;
+              width: 360px;
               border-collapse: collapse;
             }
             .summary-table td {
-              padding: 6px 8px;
-              font-size: 13px;
+              padding: 2.5px 6px;
+              font-size: 11.5px;
+              line-height: 1.25;
             }
             .summary-table td.label {
               color: #4B5563;
@@ -2992,9 +3212,9 @@ const ManageBookings = () => {
               border-top: 2px solid ${isCancelled ? "#DC2626" : "#4A1E5D"};
               border-bottom: 2px solid ${isCancelled ? "#DC2626" : "#4A1E5D"};
               font-weight: 800;
-              font-size: 15px;
+              font-size: 13.5px;
               color: ${isCancelled ? "#DC2626" : "#4A1E5D"};
-              padding: 8px 8px;
+              padding: 4px 6px;
             }
             .summary-table tr.paid td {
               color: #059669;
@@ -3005,13 +3225,13 @@ const ManageBookings = () => {
               font-weight: 700;
             }
             .footer-notes {
-              margin-top: 28px;
-              padding-top: 14px;
+              margin-top: 12px;
+              padding-top: 8px;
               border-top: 1px solid #E5E7EB;
               display: flex;
               justify-content: space-between;
               align-items: flex-end;
-              font-size: 11px;
+              font-size: 10.5px;
               color: #6B7280;
             }
             .sign-box {
@@ -3020,16 +3240,30 @@ const ManageBookings = () => {
             }
             .sign-line {
               border-bottom: 1px solid #9CA3AF;
-              margin-bottom: 4px;
-              height: 36px;
+              margin-bottom: 2px;
+              height: 22px;
             }
             @media print {
-              body {
-                padding: 0;
+              @page {
+                size: A4 portrait;
+                margin: 8mm 10mm 6mm 10mm;
+              }
+              html, body {
+                height: auto;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: #FFFFFF !important;
               }
               .invoice-wrapper {
-                border: none;
-                padding: 0;
+                border: none !important;
+                padding: 0 !important;
+                max-width: 100% !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+              }
+              .header, .details-grid, .table-container, table, tr, .financial-summary, .footer-notes {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
               }
             }
           </style>
@@ -3048,7 +3282,7 @@ const ManageBookings = () => {
                 <div class="brand-sub" style="font-weight: 800; font-size: 13px; color: #111827; margin-top: 6px;">GSTIN: 33AAMFT2081Q1ZM</div>
               </div>
               <div class="invoice-badge">
-                <div class="badge-title">${isCancelled ? "CANCELLATION FOLIO" : "GUEST FOLIO / INVOICE"}</div>
+                <div class="badge-title">${isCancelled ? "CANCELLATION FOLIO" : "TAX INVOICE"}</div>
                 ${isCancelled ? `<div><span class="status-pill-cancel">CANCELLED</span></div>` : ""}
                 <div class="badge-no">#${b.booking_id || b.id}</div>
                 <div class="badge-date">Date: ${new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}</div>
@@ -3441,6 +3675,9 @@ const ManageBookings = () => {
         </FilterToolbar>
 
         <TableCard>
+          <div className="mobile-scroll-hint">
+            <span>⇄ Swipe horizontally to view full table</span>
+          </div>
           <div className="table-responsive">
             <table>
               <thead>
@@ -3724,6 +3961,9 @@ const ManageBookings = () => {
         </FilterToolbar>
 
         <TableCard>
+          <div className="mobile-scroll-hint">
+            <span>⇄ Swipe horizontally to view full table</span>
+          </div>
           <div className="table-responsive">
             <table>
               <thead>
@@ -5220,8 +5460,8 @@ const ManageBookings = () => {
                 <button onClick={() => setSelectedBooking(null)}>✕</button>
               </div>
 
-              <div className="modal-body" style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", background: "var(--bg-subtle)", padding: "1.25rem", borderRadius: "12px" }}>
+              <div className="modal-body" style={{ display: "flex", flexDirection: "column", gap: "1rem", overflowY: "auto", flex: "1 1 auto", minHeight: 0 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "0.85rem 1rem", background: "var(--bg-subtle)", padding: "1.1rem 1.25rem", borderRadius: "12px", border: "1px solid var(--border-light)" }}>
                   <div>
                     <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", textTransform: "uppercase", fontWeight: "700" }}>
                       Guest Name
@@ -5322,7 +5562,7 @@ const ManageBookings = () => {
                 {(() => {
                   const fin = calculateBookingFinancials(selectedBooking);
                   return (
-                    <div style={{ background: "linear-gradient(135deg, #FAF5FF 0%, #F5F3FF 100%)", border: "1px solid #E9D5FF", padding: "1rem 1.25rem", borderRadius: "12px" }}>
+                    <div style={{ background: "linear-gradient(135deg, #FAF5FF 0%, #F5F3FF 100%)", border: "1px solid #E9D5FF", padding: "0.85rem 1.15rem", borderRadius: "12px" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <strong style={{ color: "var(--primary-dark)", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "6px" }}>
                           <FaReceipt /> Billing & Financial Summary (GST on Discounted Base)
@@ -5331,7 +5571,7 @@ const ManageBookings = () => {
                           {fin.billType === "Net Rate" ? "Net Rate (Inclusive)" : "Rack Rate (Exclusive)"}
                         </span>
                       </div>
-                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem 1.5rem", marginTop: "0.6rem", fontSize: "0.82rem" }}>
+                      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "0.45rem 1.25rem", marginTop: "0.5rem", fontSize: "0.82rem" }}>
                         <div style={{ display: "flex", justifyContent: "space-between" }}>
                           <span>Subtotal:</span>
                           <strong>₹{fin.subtotal.toFixed(2)}</strong>
@@ -5374,7 +5614,7 @@ const ManageBookings = () => {
                 })()}
               </div>
 
-              <div className="modal-footer" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div className="modal-footer" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
                 <button
                   type="button"
                   className="btn-primary"
@@ -5669,7 +5909,7 @@ const ManageBookings = () => {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="modal-header">
-                <h3>{isCancelled ? "Cancellation Folio & Refund Summary" : "Guest Folio & Invoice"}</h3>
+                <h3>{isCancelled ? "Cancellation Folio & Refund Summary" : "Tax Invoice"}</h3>
                 <button onClick={() => setInvoiceBooking(null)}>✕</button>
               </div>
 
@@ -5687,7 +5927,7 @@ const ManageBookings = () => {
                   </div>
                   <div style={{ textAlign: "right" }}>
                     <div style={{ fontWeight: "700", color: isCancelled ? "#DC2626" : "var(--primary-color)" }}>
-                      {isCancelled ? "CANCELLATION FOLIO" : "INVOICE"}
+                      {isCancelled ? "CANCELLATION FOLIO" : "TAX INVOICE"}
                     </div>
                     {isCancelled && (
                       <span style={{ display: "inline-block", background: "#DC2626", color: "#FFFFFF", fontSize: "0.7rem", fontWeight: "800", padding: "1px 6px", borderRadius: "4px" }}>

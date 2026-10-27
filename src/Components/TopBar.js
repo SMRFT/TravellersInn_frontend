@@ -5,51 +5,60 @@ import { useNavigate } from "react-router-dom";
 import apiRequest from "./apiRequest";
 
 const TopBarContainer = styled.header`
-  height: 70px;
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border-light);
+  height: 72px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1.5px solid var(--border-light);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 2rem;
+  padding: 0 2.25rem;
   position: sticky;
   top: 0;
   z-index: 900;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 4px 20px -2px rgba(27, 10, 36, 0.03);
 
   @media (max-width: 768px) {
     padding: 0 1rem;
+    height: 64px;
   }
 `;
 
 const LeftSection = styled.div`
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: 1.5rem;
 
   .menu-toggle {
     display: none;
-    background: none;
-    border: none;
+    background: rgba(59, 21, 78, 0.06);
+    border: 1px solid var(--border-light);
     color: var(--primary-color);
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     cursor: pointer;
-    padding: 0.25rem;
-    border-radius: 8px;
+    padding: 0.4rem;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba(59, 21, 78, 0.12);
+      transform: scale(1.05);
+    }
 
     @media (max-width: 992px) {
       display: flex;
       align-items: center;
+      justify-content: center;
     }
   }
 
   .page-title {
-    font-size: 1.15rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: var(--primary-dark);
     font-family: 'Outfit', sans-serif;
+    letter-spacing: -0.02em;
   }
 `;
 
@@ -60,31 +69,52 @@ const SearchBox = styled.div`
 
   svg {
     position: absolute;
-    left: 1rem;
+    left: 1.1rem;
     color: var(--text-muted);
     font-size: 0.9rem;
+    pointer-events: none;
+    transition: color 0.2s ease;
   }
 
   input {
-    width: 280px;
-    padding: 0.55rem 1rem 0.55rem 2.4rem;
+    width: 300px;
+    padding: 0.6rem 2.8rem 0.6rem 2.6rem;
     border-radius: 999px;
-    border: 1px solid var(--border-light);
+    border: 1.5px solid var(--border-medium);
     background: var(--bg-subtle);
     font-size: 0.85rem;
     color: var(--text-primary);
     outline: none;
-    transition: all 0.2s ease;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+
+    &:hover {
+      border-color: #CBD5E1;
+      background: #FFFFFF;
+    }
 
     &:focus {
-      border-color: var(--accent-gold);
-      background: #FFFFFF;
-      box-shadow: 0 0 0 3px var(--accent-gold-glow);
-      width: 320px;
+      border-color: var(--accent-gold) !important;
+      background: #FFFFFF !important;
+      box-shadow: 0 0 0 3.5px var(--accent-gold-glow) !important;
+      width: 350px;
     }
   }
 
-  @media (max-width: 768px) {
+  .shortcut-badge {
+    position: absolute;
+    right: 0.85rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    background: rgba(0, 0, 0, 0.04);
+    padding: 2px 6px;
+    border-radius: 6px;
+    border: 1px solid var(--border-light);
+    pointer-events: none;
+  }
+
+  @media (max-width: 860px) {
     display: none;
   }
 `;
@@ -94,44 +124,38 @@ const RightSection = styled.div`
   align-items: center;
   gap: 1.25rem;
 
-  .quick-status-pill {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.35rem 0.85rem;
-    background: #ECFDF5;
-    border: 1px solid #A7F3D0;
-    border-radius: 999px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #065F46;
-
-    .dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #10B981;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(1.3); }
-      100% { opacity: 1; transform: scale(1); }
-    }
-  }
-
   .user-badge {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.3rem 0.6rem;
+    gap: 0.65rem;
+    padding: 0.35rem 0.85rem 0.35rem 0.5rem;
     border-radius: 999px;
-    background: var(--bg-subtle);
+    background: #FFFFFF;
     border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-xs);
     font-size: 0.82rem;
     font-weight: 600;
     color: var(--primary-dark);
+    transition: all 0.2s ease;
+
+    &:hover {
+      box-shadow: var(--shadow-sm);
+      border-color: rgba(197, 160, 89, 0.35);
+    }
+
+    .user-avatar-mini {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #DFBA73 0%, #C5A059 100%);
+      color: #1A0724;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(197, 160, 89, 0.3);
+    }
   }
 `;
 
@@ -141,21 +165,24 @@ const NotificationWrapper = styled.div`
 
 const NotificationBellBtn = styled.button`
   position: relative;
-  background: ${(props) => (props.$open ? "rgba(74, 30, 93, 0.1)" : "var(--bg-subtle)")};
+  background: ${(props) => (props.$open ? "rgba(59, 21, 78, 0.1)" : "#FFFFFF")};
   border: 1px solid var(--border-light);
   border-radius: 50%;
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   color: var(--primary-dark);
-  transition: all 0.2s ease;
+  box-shadow: var(--shadow-xs);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 
   &:hover {
-    background: rgba(74, 30, 93, 0.08);
-    transform: scale(1.05);
+    background: rgba(59, 21, 78, 0.06);
+    border-color: rgba(197, 160, 89, 0.4);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
   }
 
   svg {
@@ -163,67 +190,61 @@ const NotificationBellBtn = styled.button`
     ${(props) =>
       props.$hasCount &&
       `
-      animation: bellSwingAndPulse 2s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;
+      animation: bellSwingAndPulse 2.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;
     `}
   }
 
   @keyframes bellSwingAndPulse {
     0% { transform: rotate(0deg) scale(1); }
-    15% { transform: rotate(16deg) scale(1.16); }
-    30% { transform: rotate(-14deg) scale(1.18); }
-    45% { transform: rotate(12deg) scale(1.14); }
-    60% { transform: rotate(-8deg) scale(1.08); }
-    75% { transform: rotate(4deg) scale(1.04); }
-    85% { transform: rotate(-2deg) scale(1.01); }
+    15% { transform: rotate(14deg) scale(1.12); }
+    30% { transform: rotate(-12deg) scale(1.14); }
+    45% { transform: rotate(10deg) scale(1.1); }
+    60% { transform: rotate(-6deg) scale(1.05); }
+    75% { transform: rotate(3deg) scale(1.02); }
     100% { transform: rotate(0deg) scale(1); }
   }
 
   .badge {
     position: absolute;
-    top: -3px;
-    right: -3px;
-    background: #EF4444;
+    top: -2px;
+    right: -2px;
+    background: linear-gradient(135deg, #E11D48 0%, #BE123C 100%);
     color: #FFFFFF;
-    font-size: 0.68rem;
-    font-weight: 700;
-    min-width: 18px;
-    height: 18px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    min-width: 19px;
+    height: 19px;
     border-radius: 999px;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0 4px;
-    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
-    animation: bounce 1.5s infinite alternate;
-  }
-
-  @keyframes bounce {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(-2px); }
+    box-shadow: 0 2px 8px rgba(225, 29, 72, 0.5);
+    border: 2px solid #FFFFFF;
   }
 `;
 
 const NotificationDropdown = styled.div`
   position: absolute;
-  top: 120%;
+  top: calc(100% + 10px);
   right: 0;
-  width: 340px;
+  width: 360px;
   background: #FFFFFF;
-  border-radius: 14px;
-  border: 1px solid var(--border-light);
-  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06);
+  border-radius: 18px;
+  border: 2px solid rgba(197, 160, 89, 0.55);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.85) inset, 0 25px 60px -10px rgba(27, 8, 38, 0.25), 0 0 25px rgba(197, 160, 89, 0.2);
   z-index: 1050;
   overflow: hidden;
-  animation: fadeIn 0.2s ease;
+  animation: fadeInDown 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-8px); }
-    to { opacity: 1; transform: translateY(0); }
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-10px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
   }
 
   .dropdown-header {
-    padding: 12px 16px;
-    background: linear-gradient(135deg, #4A1E5D 0%, #682B83 100%);
+    padding: 14px 18px;
+    background: linear-gradient(135deg, #1C0A25 0%, #3B154E 60%, #5B1E72 100%);
     color: #FFFFFF;
     display: flex;
     justify-content: space-between;
@@ -231,19 +252,22 @@ const NotificationDropdown = styled.div`
 
     h4 {
       margin: 0;
-      font-size: 0.88rem;
+      font-size: 0.9rem;
       font-weight: 700;
+      color: #FFFFFF;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
     }
 
     .count-tag {
-      background: rgba(255, 255, 255, 0.2);
-      padding: 2px 8px;
+      background: rgba(197, 160, 89, 0.25);
+      border: 1px solid rgba(197, 160, 89, 0.4);
+      color: #FDF4E3;
+      padding: 3px 10px;
       border-radius: 12px;
       font-size: 0.72rem;
-      font-weight: 600;
+      font-weight: 700;
     }
   }
 
@@ -404,15 +428,11 @@ const TopBar = ({ onToggleSidebar, title = "Admin Portal" }) => {
         <SearchBox>
           <FaSearch />
           <input type="text" placeholder="Search bookings, rooms, guests..." />
+          <span className="shortcut-badge">⌘K</span>
         </SearchBox>
       </LeftSection>
 
       <RightSection>
-        <div className="quick-status-pill">
-          <span className="dot"></span>
-          <span>System Online</span>
-        </div>
-
         {/* Online Booking Notification Bell */}
         <NotificationWrapper ref={dropdownRef}>
           <NotificationBellBtn
@@ -434,7 +454,7 @@ const TopBar = ({ onToggleSidebar, title = "Admin Portal" }) => {
                 <h4>
                   <FaCalendarCheck /> Pending Bookings
                 </h4>
-                <span className="count-tag" style={{ background: "rgba(251, 191, 36, 0.3)", color: "#FEF3C7" }}>
+                <span className="count-tag">
                   {notifications.length} Pending
                 </span>
               </div>
@@ -491,7 +511,7 @@ const TopBar = ({ onToggleSidebar, title = "Admin Portal" }) => {
         </NotificationWrapper>
 
         <div className="user-badge">
-          <FaUserCircle size={18} color="#4A1E5D" />
+          <div className="user-avatar-mini">{userName.charAt(0).toUpperCase()}</div>
           <span>{userName}</span>
         </div>
       </RightSection>

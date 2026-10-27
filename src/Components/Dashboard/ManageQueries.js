@@ -37,12 +37,19 @@ const QueryGrid = styled.div`
 const QueryCard = styled.div`
   background: #FFFFFF;
   border-radius: var(--radius-lg);
-  border: 1px solid ${(props) => (props.$isResolved ? "var(--border-light)" : "rgba(245, 158, 11, 0.4)")};
-  padding: 1.5rem;
-  box-shadow: var(--shadow-sm);
+  border: 1.5px solid ${(props) => (props.$isResolved ? "var(--border-light)" : "rgba(217, 119, 6, 0.45)")};
+  padding: 1.6rem;
+  box-shadow: 0 4px 16px -2px rgba(23, 20, 36, 0.05), 0 0 0 1px rgba(255, 255, 255, 0.9) inset;
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: 1rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px -4px rgba(35, 11, 47, 0.12), 0 0 0 1px rgba(197, 160, 89, 0.3);
+    border-color: rgba(197, 160, 89, 0.65);
+  }
 
   .header {
     display: flex;
