@@ -37,30 +37,33 @@ const FilterBar = styled.div`
   gap: 0.5rem;
   flex-wrap: wrap;
   background: #FFFFFF;
-  padding: 0.75rem 1rem;
-  border-radius: var(--radius-md);
+  padding: 0.85rem 1.25rem;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
 
   .category-pill {
-    padding: 0.4rem 1rem;
-    border-radius: 20px;
+    padding: 0.45rem 1.1rem;
+    border-radius: 999px;
     font-size: 0.8rem;
     font-weight: 600;
     cursor: pointer;
     border: 1px solid var(--border-light);
     background: var(--bg-subtle);
     color: var(--text-secondary);
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 
     &:hover {
-      background: rgba(74, 30, 93, 0.08);
+      background: rgba(59, 21, 78, 0.08);
       color: var(--primary-color);
     }
 
     &.active {
-      background: var(--primary-color);
+      background: linear-gradient(135deg, #1C0A25 0%, #3B154E 100%);
       color: #FFFFFF;
-      border-color: var(--primary-color);
+      border-color: #3B154E;
+      box-shadow: 0 2px 8px rgba(59, 21, 78, 0.25);
+      font-weight: 700;
     }
   }
 `;
@@ -74,17 +77,22 @@ const GalleryGrid = styled.div`
 const GalleryCard = styled.div`
   background: #FFFFFF;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
+  border: 1.5px solid rgba(59, 21, 78, 0.65);
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 16px -2px rgba(23, 20, 36, 0.05), 0 0 0 1px rgba(255, 255, 255, 0.9) inset;
   position: relative;
   display: flex;
   flex-direction: column;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 
   &:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-md);
+    transform: translateY(-5px);
+    box-shadow: 0 14px 30px -4px rgba(35, 11, 47, 0.12), 0 0 0 1px rgba(197, 160, 89, 0.35);
+    border-color: var(--accent-gold);
+
+    .img-wrapper img {
+      transform: scale(1.06);
+    }
   }
 
   .img-wrapper {
@@ -276,17 +284,18 @@ const ManageGallery = () => {
         </div>
         <button
           style={{
-            background: "linear-gradient(135deg, #4A1E5D 0%, #682B83 100%)",
+            background: "linear-gradient(135deg, #180722 0%, #350F48 50%, #4D1668 100%)",
             color: "#FFFFFF",
-            border: "none",
-            padding: "0.7rem 1.4rem",
-            borderRadius: "10px",
+            border: "1px solid rgba(197, 160, 89, 0.35)",
+            padding: "0.72rem 1.45rem",
+            borderRadius: "var(--radius-md)",
             fontWeight: "600",
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
             gap: "0.5rem",
-            boxShadow: "0 4px 14px var(--primary-glow)",
+            boxShadow: "0 4px 14px rgba(59, 21, 78, 0.25)",
+            transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
           }}
           onClick={() => {
             setFormData({
@@ -371,9 +380,9 @@ const ManageGallery = () => {
               bottom: 0,
               width: "100vw",
               height: "100vh",
-              background: "rgba(15, 10, 25, 0.65)",
-              backdropFilter: "blur(5px)",
-              WebkitBackdropFilter: "blur(5px)",
+              background: "rgba(18, 8, 28, 0.68)",
+              backdropFilter: "blur(8px)",
+              WebkitBackdropFilter: "blur(8px)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -391,7 +400,9 @@ const ManageGallery = () => {
                 borderRadius: "20px",
                 width: "100%",
                 maxWidth: "480px",
-                boxShadow: "0 25px 60px rgba(0,0,0,0.35)",
+                border: "2px solid rgba(197, 160, 89, 0.55)",
+                boxShadow: "0 0 0 1px rgba(255, 255, 255, 0.85) inset, 0 30px 80px -15px rgba(18, 6, 28, 0.55), 0 0 35px -5px rgba(197, 160, 89, 0.25)",
+                overflow: "hidden",
               }}
               onClick={(e) => e.stopPropagation()}
             >
@@ -422,7 +433,7 @@ const ManageGallery = () => {
                       width: "100%",
                       padding: "0.6rem 0.85rem",
                       borderRadius: "8px",
-                      border: "1px solid var(--border-light)",
+                      border: "1.5px solid var(--border-medium)",
                       fontSize: "0.85rem",
                     }}
                   />
@@ -439,7 +450,7 @@ const ManageGallery = () => {
                       width: "100%",
                       padding: "0.6rem 0.85rem",
                       borderRadius: "8px",
-                      border: "1px solid var(--border-light)",
+                      border: "1.5px solid var(--border-medium)",
                       fontSize: "0.85rem",
                     }}
                   >

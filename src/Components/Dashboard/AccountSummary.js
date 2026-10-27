@@ -51,22 +51,22 @@ const HeaderBar = styled.div`
 `;
 
 const PrimaryButton = styled.button`
-  background: linear-gradient(135deg, #4A1E5D 0%, #682B83 100%);
+  background: linear-gradient(135deg, #180722 0%, #350F48 50%, #4D1668 100%);
   color: #FFFFFF;
-  border: none;
-  padding: 0.65rem 1.25rem;
-  border-radius: 10px;
+  border: 1px solid rgba(197, 160, 89, 0.35);
+  padding: 0.72rem 1.35rem;
+  border-radius: var(--radius-md);
   font-weight: 600;
   font-size: 0.85rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  box-shadow: 0 4px 14px rgba(74, 30, 93, 0.25);
-  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(59, 21, 78, 0.25);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 
   &:hover {
-    box-shadow: 0 6px 18px rgba(74, 30, 93, 0.35);
+    box-shadow: 0 6px 20px rgba(59, 21, 78, 0.35);
     transform: translateY(-1px);
   }
 `;
@@ -75,30 +75,31 @@ const SecondaryButton = styled.button`
   background: #FFFFFF;
   color: var(--primary-color);
   border: 1px solid var(--border-light);
-  padding: 0.65rem 1.2rem;
-  border-radius: 10px;
+  padding: 0.72rem 1.25rem;
+  border-radius: var(--radius-md);
   font-weight: 600;
   font-size: 0.85rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
-  box-shadow: var(--shadow-sm);
-  transition: all 0.2s ease;
+  box-shadow: var(--shadow-xs);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 
   &:hover {
-    background: var(--bg-subtle);
-    border-color: var(--primary-light);
+    background: #FFFFFF;
+    border-color: rgba(197, 160, 89, 0.4);
+    box-shadow: var(--shadow-sm);
     transform: translateY(-1px);
   }
 `;
 
 const DateFilterCard = styled.div`
   background: #FFFFFF;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-sm);
-  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-xl);
+  border: 1.5px solid var(--border-light);
+  box-shadow: 0 4px 18px -2px rgba(23, 20, 36, 0.05), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+  padding: 1rem 1.4rem;
   display: flex !important;
   flex-direction: row !important;
   align-items: center !important;
@@ -115,7 +116,7 @@ const DateInputsWrapper = styled.div`
   background: var(--bg-subtle) !important;
   padding: 0.35rem 0.85rem !important;
   border-radius: 10px !important;
-  border: 1px solid var(--border-light) !important;
+  border: 1.5px solid var(--border-medium) !important;
   flex-wrap: nowrap !important;
   white-space: nowrap !important;
 `;
@@ -176,20 +177,20 @@ const QuickFilterGroup = styled.div`
   background: var(--bg-subtle) !important;
   padding: 3px !important;
   border-radius: 10px !important;
-  border: 1px solid var(--border-light) !important;
+  border: 1.5px solid var(--border-light) !important;
   flex-wrap: nowrap !important;
   white-space: nowrap !important;
 
   button {
-    padding: 0.4rem 0.85rem !important;
-    border-radius: 7px !important;
-    font-size: 0.78rem !important;
+    padding: 0.45rem 0.95rem !important;
+    border-radius: 8px !important;
+    font-size: 0.8rem !important;
     font-weight: 600 !important;
     cursor: pointer !important;
     border: none !important;
     background: transparent !important;
     color: var(--text-secondary) !important;
-    transition: all 0.2s ease !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
     white-space: nowrap !important;
 
     &:hover {
@@ -199,9 +200,10 @@ const QuickFilterGroup = styled.div`
     }
 
     &.active {
-      background: var(--primary-color) !important;
+      background: linear-gradient(135deg, #1C0A25 0%, #3B154E 100%) !important;
       color: #FFFFFF !important;
-      box-shadow: 0 2px 8px rgba(74, 30, 93, 0.25) !important;
+      box-shadow: 0 2px 8px rgba(59, 21, 78, 0.25) !important;
+      font-weight: 700 !important;
     }
   }
 `;
@@ -209,18 +211,27 @@ const QuickFilterGroup = styled.div`
 const MetricsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.25rem;
+  gap: 1.35rem;
 `;
 
 const MetricBox = styled.div`
   background: #FFFFFF;
-  padding: 1.5rem;
+  padding: 1.6rem;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-sm);
+  border: 1.5px solid rgba(59, 21, 78, 0.45);
+  box-shadow: 0 4px 16px -2px rgba(23, 20, 36, 0.05), 0 0 0 1px rgba(255, 255, 255, 0.9) inset;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 30px -4px rgba(35, 11, 47, 0.12), 0 0 0 1px rgba(197, 160, 89, 0.35);
+    border-color: var(--accent-gold);
+  }
 
   .details {
     display: flex;
@@ -258,9 +269,15 @@ const MetricBox = styled.div`
 const TableCard = styled.div`
   background: #FFFFFF;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-sm);
+  border: 1.5px solid rgba(59, 21, 78, 0.65);
+  box-shadow: 0 4px 18px -2px rgba(23, 20, 36, 0.05);
   overflow: hidden;
+  transition: all 0.25s ease;
+
+  &:hover {
+    box-shadow: 0 10px 30px -4px rgba(35, 11, 47, 0.1), 0 0 0 1px rgba(197, 160, 89, 0.35);
+    border-color: var(--accent-gold);
+  }
 
   .table-responsive {
     overflow-x: auto;

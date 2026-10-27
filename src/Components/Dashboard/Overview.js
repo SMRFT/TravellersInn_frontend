@@ -26,41 +26,68 @@ const OverviewContainer = styled.div`
 `;
 
 const WelcomeHero = styled.div`
-  background: linear-gradient(135deg, #2D1137 0%, #4A1E5D 50%, #682B83 100%);
+  background: linear-gradient(135deg, #150620 0%, #290B38 45%, #46145B 100%);
   border-radius: var(--radius-xl);
-  padding: 2.25rem 2.5rem;
+  padding: 2.5rem 2.75rem;
   color: #FFFFFF;
   position: relative;
   overflow: hidden;
   box-shadow: var(--shadow-luxury);
+  border: 2px solid rgba(197, 160, 89, 0.45);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15) inset, var(--shadow-luxury);
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(197, 160, 89, 0.15);
+    border: 1.5px solid rgba(197, 160, 89, 0.45);
+    color: #F5E5C9;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    margin-bottom: 0.85rem;
+  }
 
   .hero-content {
     position: relative;
     z-index: 2;
-    max-width: 650px;
+    max-width: 680px;
   }
 
   h1 {
     font-family: 'Playfair Display', serif;
-    font-size: 2.1rem;
+    font-size: 2.25rem;
     font-weight: 700;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.6rem;
+    color: #FFFFFF;
+    letter-spacing: -0.01em;
+
+    span.gold {
+      background: linear-gradient(135deg, #F9F1DC 0%, #DFBA73 60%, #C5A059 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
   }
 
   p {
-    color: rgba(255, 255, 255, 0.85);
+    color: rgba(255, 255, 255, 0.82);
     font-size: 0.95rem;
-    line-height: 1.5;
+    line-height: 1.6;
+    font-weight: 400;
   }
 
   .accent-circle {
     position: absolute;
-    right: -40px;
-    bottom: -60px;
-    width: 260px;
-    height: 260px;
+    right: -50px;
+    bottom: -70px;
+    width: 320px;
+    height: 320px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(197, 160, 89, 0.25) 0%, rgba(74, 30, 93, 0) 70%);
+    background: radial-gradient(circle, rgba(197, 160, 89, 0.22) 0%, rgba(59, 21, 78, 0) 70%);
     pointer-events: none;
   }
 `;
@@ -68,24 +95,37 @@ const WelcomeHero = styled.div`
 const StatsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.25rem;
+  gap: 1.35rem;
 `;
 
 const StatCard = styled(motion.div)`
   background: #FFFFFF;
-  padding: 1.35rem 1.5rem;
+  padding: 1.5rem 1.65rem;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-sm);
+  border: 1.5px solid rgba(59, 21, 78, 0.45);
+  box-shadow: 0 4px 16px -2px rgba(23, 20, 36, 0.05), 0 0 0 1px rgba(255, 255, 255, 0.9) inset;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  transition: all 0.25s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: ${(props) => props.$accent || "var(--accent-gold)"};
+    opacity: 0.8;
+  }
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: var(--shadow-md);
-    border-color: rgba(197, 160, 89, 0.4);
+    box-shadow: 0 12px 28px -4px rgba(35, 11, 47, 0.12), 0 0 0 1px rgba(197, 160, 89, 0.3);
+    border-color: rgba(197, 160, 89, 0.65);
   }
 
   .stat-info {
@@ -94,49 +134,60 @@ const StatCard = styled(motion.div)`
   }
 
   .stat-label {
-    font-size: 0.78rem;
+    font-size: 0.75rem;
     color: var(--text-secondary);
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 0.25rem;
+    letter-spacing: 0.7px;
+    margin-bottom: 0.35rem;
   }
 
   .stat-value {
-    font-size: 1.8rem;
+    font-size: 1.9rem;
     font-weight: 800;
     color: var(--primary-dark);
     font-family: 'Outfit', sans-serif;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
   }
 
   .stat-subtext {
     font-size: 0.75rem;
     color: var(--text-muted);
-    margin-top: 2px;
+    margin-top: 4px;
+    font-weight: 500;
   }
 
   .stat-icon-wrapper {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.3rem;
-    background: ${(props) => props.$bg || "rgba(74, 30, 93, 0.08)"};
-    color: ${(props) => props.$color || "#4A1E5D"};
+    font-size: 1.35rem;
+    background: ${(props) => props.$bg || "rgba(59, 21, 78, 0.08)"};
+    color: ${(props) => props.$color || "#3B154E"};
+    box-shadow: 0 4px 12px ${(props) => props.$glow || "rgba(0, 0, 0, 0.04)"};
+    border: 1px solid rgba(255, 255, 255, 0.6);
   }
 `;
 
 const AnalyticsCard = styled.div`
   background: #FFFFFF;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-sm);
-  padding: 1.5rem;
+  border: 1.5px solid rgba(59, 21, 78, 0.65);
+  box-shadow: 0 4px 18px -2px rgba(23, 20, 36, 0.05), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+  padding: 1.75rem;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.5rem;
+  transition: all 0.25s ease;
+
+  &:hover {
+    box-shadow: 0 12px 32px -4px rgba(35, 11, 47, 0.12), 0 0 0 1px rgba(197, 160, 89, 0.35);
+    border-color: var(--accent-gold);
+  }
 `;
 
 const SectionHeader = styled.div`
@@ -191,7 +242,7 @@ const FilterPillGroup = styled.div`
   border-radius: 10px;
   padding: 3px;
   gap: 3px;
-  border: 1px solid var(--border-light);
+  border: 1.5px solid var(--border-light);
 `;
 
 const FilterPill = styled.button`
@@ -215,7 +266,7 @@ const DatePickerWrapper = styled.div`
   align-items: center;
   gap: 0.5rem;
   background: #FFFFFF;
-  border: 1px solid var(--border-light);
+  border: 1.5px solid var(--border-light);
   border-radius: 8px;
   padding: 0.35rem 0.75rem;
   font-size: 0.82rem;
@@ -243,7 +294,7 @@ const ViewToggleGroup = styled.div`
   background: var(--bg-subtle);
   padding: 3px;
   border-radius: 8px;
-  border: 1px solid var(--border-light);
+  border: 1.5px solid var(--border-light);
   gap: 2px;
 
   button {
@@ -634,8 +685,8 @@ const QuickActionGrid = styled.div`
 
 const ActionCard = styled(Link)`
   background: #FFFFFF;
-  padding: 1.35rem 1.5rem;
-  border-radius: var(--radius-md);
+  padding: 1.4rem 1.6rem;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border-light);
   text-decoration: none;
   color: inherit;
@@ -643,34 +694,36 @@ const ActionCard = styled(Link)`
   align-items: center;
   justify-content: space-between;
   box-shadow: var(--shadow-sm);
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 
   .action-content {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 1.15rem;
 
     .icon-box {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      background: rgba(74, 30, 93, 0.08);
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(59, 21, 78, 0.08) 0%, rgba(197, 160, 89, 0.15) 100%);
       color: var(--primary-color);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
+      font-size: 1.3rem;
+      border: 1px solid rgba(197, 160, 89, 0.2);
+      transition: all 0.25s ease;
     }
 
     h3 {
-      font-size: 0.95rem;
+      font-size: 1rem;
       font-weight: 700;
       color: var(--text-primary);
-      margin-bottom: 0.15rem;
+      margin-bottom: 0.2rem;
     }
 
     p {
-      font-size: 0.76rem;
+      font-size: 0.78rem;
       color: var(--text-secondary);
       margin: 0;
     }
@@ -678,16 +731,24 @@ const ActionCard = styled(Link)`
 
   .arrow-icon {
     color: var(--text-muted);
-    font-size: 0.9rem;
-    transition: transform 0.2s ease, color 0.2s ease;
+    font-size: 1rem;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.25s ease;
   }
 
   &:hover {
-    border-color: var(--accent-gold);
-    transform: translateX(4px);
+    border-color: rgba(197, 160, 89, 0.5);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+
+    .icon-box {
+      background: var(--primary-color);
+      color: #FFFFFF;
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+
     .arrow-icon {
-      color: var(--primary-color);
-      transform: translateX(3px);
+      color: var(--accent-gold);
+      transform: translateX(4px);
     }
   }
 `;
@@ -933,9 +994,14 @@ const Overview = ({ onNavigate }) => {
     <OverviewContainer className="animate-fade-in">
       <WelcomeHero>
         <div className="hero-content">
-          <h1>Welcome, {userName}</h1>
+          <div className="hero-tag">
+            <span style={{ fontSize: "0.85rem" }}>✦</span> Executive Operations Portal
+          </div>
+          <h1>
+            Welcome, <span className="gold">{userName}</span>
+          </h1>
           <p>
-            Monitor live hospitality operations, daily income breakdowns, reservations analytics, room inventory, and financial summaries for TravellersInn.
+            Monitor real-time hospitality operations, daily revenue breakdowns, reservation analytics, room inventory, and financial reports for TravellersInn.
           </p>
         </div>
         <div className="accent-circle"></div>

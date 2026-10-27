@@ -17,7 +17,7 @@ import {
 
 const SidebarContainer = styled.aside`
   width: 280px;
-  background: linear-gradient(180deg, #2D1137 0%, #4A1E5D 100%);
+  background: linear-gradient(180deg, #15061F 0%, #230A32 45%, #340F48 100%);
   color: #FFFFFF;
   height: 100vh;
   position: fixed;
@@ -26,9 +26,22 @@ const SidebarContainer = styled.aside`
   display: flex;
   flex-direction: column;
   z-index: 1000;
-  box-shadow: 4px 0 25px rgba(0, 0, 0, 0.15);
+  border-right: 1.5px solid rgba(197, 160, 89, 0.25);
+  box-shadow: 6px 0 35px rgba(10, 2, 16, 0.45);
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   overflow-y: auto;
+
+  /* Custom Sidebar Scrollbar */
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(197, 160, 89, 0.25);
+    border-radius: 999px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
 
   @media (max-width: 992px) {
     transform: ${(props) => (props.$isOpen ? "translateX(0)" : "translateX(-100%)")};
@@ -36,30 +49,43 @@ const SidebarContainer = styled.aside`
 `;
 
 const BrandSection = styled.div`
-  padding: 1.75rem 1.5rem 1.25rem 1.5rem;
+  padding: 1.75rem 1.5rem 1.35rem 1.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 1.5rem;
+    right: 1.5rem;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(197, 160, 89, 0.35) 50%, transparent 100%);
+  }
 
   .brand-logo-wrapper {
     display: flex;
     align-items: center;
-    gap: 0.85rem;
+    gap: 0.9rem;
   }
 
   .logo-badge {
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
     border-radius: 12px;
-    background: linear-gradient(135deg, #C5A059 0%, #E2C78E 100%);
+    background: linear-gradient(135deg, #DFBA73 0%, #C5A059 50%, #9F7B34 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #2D1137;
-    font-size: 1.3rem;
+    color: #1A0724;
+    font-size: 1.25rem;
     font-weight: 800;
-    box-shadow: 0 4px 12px rgba(197, 160, 89, 0.35);
+    font-family: 'Playfair Display', serif;
+    box-shadow: 0 4px 16px rgba(197, 160, 89, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.3);
   }
 
   .brand-info {
@@ -69,18 +95,20 @@ const BrandSection = styled.div`
 
   .brand-title {
     font-family: 'Playfair Display', serif;
-    font-size: 1.15rem;
+    font-size: 1.22rem;
     font-weight: 700;
     color: #FFFFFF;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.4px;
+    line-height: 1.2;
   }
 
   .brand-tag {
-    font-size: 0.68rem;
-    color: #C5A059;
+    font-size: 0.65rem;
+    color: #E5CCA0;
     text-transform: uppercase;
-    letter-spacing: 1.8px;
-    font-weight: 600;
+    letter-spacing: 2px;
+    font-weight: 700;
+    margin-top: 2px;
   }
 
   .close-mobile {
@@ -97,24 +125,28 @@ const BrandSection = styled.div`
 
 const UserProfileCard = styled.div`
   margin: 1.25rem 1.25rem 0.5rem 1.25rem;
-  padding: 0.85rem 1rem;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
+  padding: 0.9rem 1.1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid rgba(197, 160, 89, 0.35);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.85rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 
   .avatar {
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
-    background: rgba(197, 160, 89, 0.2);
+    background: linear-gradient(135deg, rgba(197, 160, 89, 0.3) 0%, rgba(59, 21, 78, 0.4) 100%);
     border: 1.5px solid #C5A059;
+    box-shadow: 0 2px 10px rgba(197, 160, 89, 0.25);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #C5A059;
+    color: #E5CCA0;
     font-size: 0.95rem;
     font-weight: 700;
   }
@@ -126,7 +158,7 @@ const UserProfileCard = styled.div`
   }
 
   .name {
-    font-size: 0.85rem;
+    font-size: 0.86rem;
     font-weight: 600;
     color: #FFFFFF;
     white-space: nowrap;
@@ -136,12 +168,14 @@ const UserProfileCard = styled.div`
 
   .role-badge {
     font-size: 0.65rem;
-    color: #C5A059;
+    color: #E5CCA0;
     display: flex;
     align-items: center;
-    gap: 0.3rem;
-    font-weight: 600;
+    gap: 0.35rem;
+    font-weight: 700;
     text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-top: 1px;
   }
 `;
 
@@ -155,10 +189,21 @@ const NavList = styled.nav`
   .section-label {
     font-size: 0.65rem;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.4);
-    letter-spacing: 1.4px;
+    color: rgba(229, 204, 160, 0.65);
+    letter-spacing: 1.6px;
     font-weight: 700;
-    padding: 0.6rem 0.75rem 0.2rem 0.75rem;
+    padding: 0.75rem 0.75rem 0.25rem 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+
+    &::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.08);
+      margin-left: 0.25rem;
+    }
   }
 `;
 
@@ -172,31 +217,34 @@ const StyledNavLink = styled(NavLink)`
   text-decoration: none;
   font-size: 0.88rem;
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 
   svg {
     font-size: 1.05rem;
     color: rgba(255, 255, 255, 0.6);
-    transition: transform 0.2s ease, color 0.2s ease;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.25s ease;
   }
 
   &:hover {
     background: rgba(255, 255, 255, 0.08);
     color: #FFFFFF;
+    transform: translateX(3px);
+
     svg {
-      color: #C5A059;
-      transform: translateX(2px);
+      color: #DFBA73;
+      transform: translateX(1px);
     }
   }
 
   &.active {
-    background: linear-gradient(90deg, rgba(197, 160, 89, 0.25) 0%, rgba(197, 160, 89, 0.08) 100%);
-    border-left: 3px solid #C5A059;
+    background: linear-gradient(90deg, rgba(197, 160, 89, 0.22) 0%, rgba(197, 160, 89, 0.05) 100%);
+    border-left: 3.5px solid #C5A059;
     color: #FFFFFF;
     font-weight: 600;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 
     svg {
-      color: #C5A059;
+      color: #E5CCA0;
     }
   }
 `;
@@ -213,19 +261,21 @@ const LogoutButton = styled.button`
   justify-content: center;
   gap: 0.6rem;
   padding: 0.75rem 1rem;
-  background: rgba(239, 68, 68, 0.12);
-  border: 1px solid rgba(239, 68, 68, 0.25);
+  background: rgba(225, 29, 72, 0.12);
+  border: 1px solid rgba(225, 29, 72, 0.25);
   border-radius: 12px;
-  color: #F87171;
+  color: #FDA4AF;
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 
   &:hover {
-    background: #EF4444;
+    background: #E11D48;
     color: #FFFFFF;
-    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+    border-color: #E11D48;
+    box-shadow: 0 6px 18px rgba(225, 29, 72, 0.35);
+    transform: translateY(-1px);
   }
 `;
 

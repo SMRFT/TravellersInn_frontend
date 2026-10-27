@@ -44,10 +44,10 @@ const HeaderBar = styled.div`
 `;
 
 const PrimaryButton = styled(motion.button)`
-  background: linear-gradient(135deg, #4A1E5D 0%, #682B83 100%);
+  background: linear-gradient(135deg, #180722 0%, #350F48 50%, #4D1668 100%);
   color: #FFFFFF;
-  border: none;
-  padding: 0.7rem 1.4rem;
+  border: 1px solid rgba(197, 160, 89, 0.35);
+  padding: 0.72rem 1.45rem;
   border-radius: var(--radius-md);
   font-weight: 600;
   font-size: 0.88rem;
@@ -55,10 +55,12 @@ const PrimaryButton = styled(motion.button)`
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
-  box-shadow: 0 4px 14px var(--primary-glow);
+  box-shadow: 0 4px 14px rgba(59, 21, 78, 0.25);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 
   &:hover {
-    box-shadow: 0 6px 18px var(--primary-glow);
+    box-shadow: 0 6px 20px rgba(59, 21, 78, 0.35);
+    transform: translateY(-1px);
   }
 `;
 
@@ -66,9 +68,10 @@ const TabsNav = styled.div`
   display: flex;
   gap: 0.5rem;
   background: #FFFFFF;
-  padding: 0.5rem;
-  border-radius: var(--radius-lg);
+  padding: 0.45rem;
+  border-radius: var(--radius-xl);
   border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
   width: fit-content;
 
   button {
@@ -80,15 +83,21 @@ const TabsNav = styled.div`
     font-weight: 600;
     color: var(--text-secondary);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.45rem;
 
     &.active {
-      background: var(--primary-color);
+      background: linear-gradient(135deg, #1C0A25 0%, #3B154E 100%);
       color: #FFFFFF;
-      box-shadow: 0 2px 8px var(--primary-glow);
+      box-shadow: 0 2px 8px rgba(59, 21, 78, 0.25);
+      font-weight: 700;
+    }
+
+    &:hover:not(.active) {
+      background: rgba(59, 21, 78, 0.05);
+      color: var(--primary-dark);
     }
   }
 `;
@@ -102,17 +111,17 @@ const HallsGrid = styled.div`
 const HallCard = styled(motion.div)`
   background: #FFFFFF;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
+  border: 1.5px solid rgba(59, 21, 78, 0.65);
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 16px -2px rgba(23, 20, 36, 0.05), 0 0 0 1px rgba(255, 255, 255, 0.9) inset;
   display: flex;
   flex-direction: column;
-  transition: all 0.25s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-md);
-    border-color: rgba(197, 160, 89, 0.4);
+    transform: translateY(-5px);
+    box-shadow: 0 14px 30px -4px rgba(35, 11, 47, 0.12), 0 0 0 1px rgba(197, 160, 89, 0.35);
+    border-color: var(--accent-gold);
   }
 
   .hall-header {
@@ -236,9 +245,15 @@ const HallCard = styled(motion.div)`
 const TableCard = styled.div`
   background: #FFFFFF;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-sm);
+  border: 1.5px solid rgba(59, 21, 78, 0.65);
+  box-shadow: 0 4px 18px -2px rgba(23, 20, 36, 0.05);
   overflow: hidden;
+  transition: all 0.25s ease;
+
+  &:hover {
+    box-shadow: 0 10px 30px -4px rgba(35, 11, 47, 0.1), 0 0 0 1px rgba(197, 160, 89, 0.35);
+    border-color: var(--accent-gold);
+  }
 
   .table-responsive {
     overflow-x: auto;
@@ -259,14 +274,14 @@ const TableCard = styled.div`
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: var(--text-secondary);
-      border-bottom: 1px solid var(--border-light);
+      border-bottom: 2px solid var(--border-medium);
     }
 
     td {
       padding: 1rem 1.25rem;
       font-size: 0.85rem;
       color: var(--text-primary);
-      border-bottom: 1px solid var(--border-light);
+      border-bottom: 1px solid var(--border-subtle);
       vertical-align: middle;
     }
 
@@ -293,12 +308,12 @@ const StatusPill = styled.span`
   ${(props) => {
     switch (props.$status?.toLowerCase()) {
       case "confirmed":
-        return `background: #ECFDF5; color: #065F46; border: 1px solid #A7F3D0;`;
+        return `background: #ECFDF5; color: #065F46; border: 1.5px solid #A7F3D0;`;
       case "cancelled":
-        return `background: #FEF2F2; color: #991B1B; border: 1px solid #FECACA;`;
+        return `background: #FEF2F2; color: #991B1B; border: 1.5px solid #FECACA;`;
       case "pending":
       default:
-        return `background: #FFFBEB; color: #92400E; border: 1px solid #FDE68A;`;
+        return `background: #FFFBEB; color: #92400E; border: 1.5px solid #FDE68A;`;
     }
   }}
 `;
@@ -311,14 +326,20 @@ const ModalOverlay = styled.div`
   bottom: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(15, 10, 25, 0.65);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  background: rgba(18, 8, 28, 0.68);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 99999;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem;
+  padding: 1.25rem;
+  overflow-y: auto;
+
+  @media (max-width: 640px) {
+    padding: 0.5rem;
+    align-items: flex-start;
+  }
 `;
 
 const ModalContainer = styled(motion.div)`
@@ -326,29 +347,53 @@ const ModalContainer = styled(motion.div)`
   border-radius: var(--radius-xl);
   width: 100%;
   max-width: ${(props) => props.$maxWidth || "550px"};
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+  max-height: min(92vh, calc(100vh - 2.5rem));
+  border: 2px solid rgba(197, 160, 89, 0.55);
+  box-shadow: 
+    0 0 0 1px rgba(255, 255, 255, 0.85) inset,
+    0 30px 80px -15px rgba(18, 6, 28, 0.55),
+    0 0 35px -5px rgba(197, 160, 89, 0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  margin: auto;
 
   .modal-header {
+    flex-shrink: 0;
     padding: 1.25rem 1.75rem;
-    border-bottom: 1px solid var(--border-light);
+    background: linear-gradient(135deg, #180722 0%, #300C3F 60%, #4D1668 100%);
+    border-bottom: 2px solid rgba(197, 160, 89, 0.45);
     display: flex;
     align-items: center;
     justify-content: space-between;
 
     h3 {
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       font-weight: 700;
-      color: var(--primary-dark);
+      color: #FFFFFF;
+      font-family: 'Playfair Display', serif;
+      margin: 0;
     }
 
     button {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-size: 1.2rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      font-size: 0.95rem;
       cursor: pointer;
+      transition: all 0.2s ease;
+      &:hover {
+        background: rgba(225, 29, 72, 0.8);
+        border-color: #E11D48;
+        transform: scale(1.08);
+      }
     }
   }
 
@@ -356,7 +401,27 @@ const ModalContainer = styled(motion.div)`
     padding: 1.5rem 1.75rem;
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
+    gap: 1.25rem;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    min-height: 0;
+    overscroll-behavior: contain;
+
+    /* Custom elegant scrollbar */
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.03);
+      border-radius: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: rgba(74, 30, 93, 0.25);
+      border-radius: 4px;
+      &:hover {
+        background: rgba(74, 30, 93, 0.5);
+      }
+    }
 
     .form-group {
       display: flex;
@@ -370,44 +435,58 @@ const ModalContainer = styled(motion.div)`
       }
 
       input, select, textarea {
-        padding: 0.6rem 0.85rem;
+        padding: 0.65rem 0.85rem;
         border-radius: var(--radius-sm);
-        border: 1px solid var(--border-light);
+        border: 1.5px solid var(--border-medium);
         font-size: 0.85rem;
         outline: none;
 
         &:focus {
-          border-color: var(--primary-color);
+          border-color: var(--accent-gold);
+          box-shadow: 0 0 0 3px var(--accent-gold-glow);
         }
       }
     }
   }
 
   .modal-footer {
-    padding: 1.25rem 1.75rem;
-    border-top: 1px solid var(--border-light);
+    flex-shrink: 0;
+    padding: 1.15rem 1.75rem;
+    background: #F8FAFD;
+    border-top: 1.5px solid var(--border-light);
     display: flex;
     justify-content: flex-end;
     gap: 0.75rem;
 
     button {
-      padding: 0.65rem 1.25rem;
+      padding: 0.65rem 1.35rem;
       border-radius: var(--radius-sm);
       font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
+      transition: all 0.2s ease;
     }
 
     .btn-secondary {
-      background: var(--bg-subtle);
-      border: 1px solid var(--border-light);
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-light);
       color: var(--text-secondary);
+      box-shadow: var(--shadow-xs);
+      &:hover {
+        border-color: #CBD5E1;
+        color: var(--text-primary);
+      }
     }
 
     .btn-primary {
-      background: var(--primary-color);
+      background: linear-gradient(135deg, #180722 0%, #350F48 50%, #4D1668 100%);
       color: #FFFFFF;
-      border: none;
+      border: 1px solid rgba(197, 160, 89, 0.35);
+      box-shadow: 0 4px 12px rgba(59, 21, 78, 0.25);
+      &:hover {
+        box-shadow: 0 6px 18px rgba(59, 21, 78, 0.35);
+        transform: translateY(-1px);
+      }
     }
   }
 `;

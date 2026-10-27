@@ -19,6 +19,7 @@ const AppContainer = styled.div`
   display: flex;
   min-height: 100vh;
   background-color: var(--bg-main);
+  position: relative;
 `;
 
 const MainContent = styled.div`
@@ -27,7 +28,9 @@ const MainContent = styled.div`
   display: flex;
   flex-direction: column;
   min-width: 0;
-  transition: margin-left 0.3s ease;
+  max-width: 100%;
+  overflow-x: hidden;
+  transition: margin-left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 
   @media (max-width: 992px) {
     margin-left: 0;
@@ -35,11 +38,21 @@ const MainContent = styled.div`
 `;
 
 const ContentWrapper = styled.main`
-  padding: 2rem 2.5rem;
+  padding: 2.25rem 2.75rem;
   flex: 1;
+  max-width: 1680px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+
+  @media (max-width: 1200px) {
+    padding: 2rem 1.75rem;
+  }
 
   @media (max-width: 768px) {
-    padding: 1.25rem 1rem;
+    padding: 1rem 0.75rem;
+    max-width: 100vw;
+    overflow-x: hidden;
   }
 `;
 
@@ -49,8 +62,9 @@ const MobileOverlay = styled.div`
     display: ${(props) => (props.$isOpen ? "block" : "none")};
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
+    background: rgba(18, 8, 28, 0.65);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     z-index: 999;
   }
 `;
